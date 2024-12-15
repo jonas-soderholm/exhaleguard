@@ -16,7 +16,12 @@ export function SubmitButton({
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" aria-disabled={pending} {...props}>
+    <Button
+      className="w-full mx-auto btn-custom-primary-border hover:bg-blue-600"
+      type="submit"
+      aria-disabled={pending}
+      {...props}
+    >
       {pending ? pendingText : children}
     </Button>
   );

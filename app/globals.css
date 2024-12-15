@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* black white */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: 0, 0%, 90%;
+    --foreground: 0 0% 20%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
@@ -59,6 +60,15 @@
   }
 }
 
+input:-webkit-autofill {
+  background-color: rgb(11, 88, 197) important;
+  -webkit-box-shadow: 0 0 0px 1000px #191e24 inset !important; /* Tailwind's bg-base-200 */
+  -webkit-text-fill-color: rgb(
+    226 232 240
+  ) !important; /* Tailwind's text-gray-300 */
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -70,4 +80,45 @@
 
 body {
   font-family: "Open Sans", sans-serif;
+  /* background-image: url("/grid.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; 
+  background-position: center; 
+  background-attachment: fixed;  */
+}
+
+.bg-darkmode {
+  background-color: #0a0a0a;
+}
+
+.btn-custom-primary {
+  @apply btn text-slate-200 dark:text-slate-200 bg-transparent px-4 py-2 hover:bg-blue-900
+ hover:text-slate-200 rounded-full border-slate-200 border-2 hover:border-transparent;
+}
+
+.btn-custom-primary-border {
+  @apply btn text-slate-200 dark:text-slate-200 bg-transparent px-4 py-2 hover:bg-blue-600
+  hover:text-slate-200 rounded-full border-slate-200 border-2 hover:border-transparent;
+}
+
+.btn-custom-primary-reverse {
+  @apply btn bg-blue-600  text-slate-200 px-4 py-2 hover:bg-blue-900 hover:text-slate-200 rounded-full border-none;
+}
+
+.btn-custom-primary-course {
+  @apply btn btn-sm text-slate-200 dark:text-slate-200 bg-transparent px-4 py-2 hover:bg-blue-600
+ hover:text-slate-200 rounded-full border-slate-200 border-2 hover:border-transparent;
+}
+
+.btn-custom-primary-lesson {
+  @apply btn bg-blue-600 text-slate-200 rounded-full border-none hover:bg-blue-900
+   hover:text-slate-200 px-3 py-1 text-[11px] md:px-4 md:text-sm;
+}
+
+.bg-exhaleguard-primary {
+  background-color: #2563eb;
+}
+
+.text-exhaleguard-primary {
+  color: #2563eb;
 }

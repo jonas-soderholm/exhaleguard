@@ -1,16 +1,17 @@
-import HeaderAuth from "@/components/header/auth/header-auth";
 import { ThemeProvider } from "next-themes";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
-import Head from "next/head";
-import Link from "next/link";
+import Header from "@/components/header/Header";
+import BreadCrumbs from "@/components/breadcrumbs/BreadCrumbs";
+import { Logo } from "./constants/logo";
 
 const defaultUrl = "http://localhost:3000";
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "XhaleGuard basic cybersecurity hygiene",
-  description: "XhaleGuard badge cybersecurity awareness training",
+  title: "XhaleGuard - Basic Cybersecurity Training",
+  description:
+    "Learn cybersecurity and privacy fundamentals with beginner-friendly, interactive courses. Try 5 free lessons today—no login required.",
 };
 
 export default function RootLayout({
@@ -19,18 +20,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={GeistSans.className} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${GeistSans.className} overflow-y-scroll`}
+      suppressHydrationWarning
+    >
       <head>
         <link
           href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap"
           rel="stylesheet"
         />
-        <title>XhaleGuard - Basic Cybersecurity training</title>
+        <title>ExhaleGuard - Basic Cybersecurity Training</title>
         <meta
           name="description"
-          content="XhaleGuard cybersecurity awareness training to enhance your security infrastructure."
+          content="Learn cybersecurity and privacy fundamentals with beginner-friendly, interactive courses. Try 5 free lessons today—no login required."
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href={Logo.Tower} />
       </head>
       <body className="bg-background text-foreground">
         <ThemeProvider
@@ -41,26 +46,15 @@ export default function RootLayout({
         >
           <main className="min-h-screen flex flex-col">
             {/* Header/Nav Section */}
-            <nav className="w-full flex justify-between border-b border-b-foreground/10 h-16">
-              <div className="w-full flex justify-between items-center text-sm">
-                <Link href="/">
-                  <div className="flex items-center font-semibold">
-                    <img src="/logo.svg" alt="" className="w-6 md:w-8 mx-3" />
-                    <span className="text-[15px] md:text-xl font-bold">
-                      ExhaleGuard
-                    </span>
-                  </div>
-                </Link>
-                <HeaderAuth />
-              </div>
-            </nav>
-
+            <Header />
             {/* Main Content Area */}
-            <div className="flex-1 p-5">{children}</div>
+
+            <BreadCrumbs />
+            <div className="flex-1">{children}</div>
 
             {/* Footer Section */}
-            <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-8 mt-28">
-              <p>XhaleGuard</p>
+            <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-8">
+              <p>ExhaleGuard</p>
             </footer>
           </main>
         </ThemeProvider>

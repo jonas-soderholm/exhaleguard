@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db" // SQLite database file
+}
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+//   directUrl = env("DIRECT_URL")
+// }
+
+// User table mapped to Supabase auth.users
+model User {
+  id             String         @id // Supabase auth.users.id
+  subscriptions  Subscription[]
+  teamMemberships TeamMembership[]
+  progressions    Progress[]     // Tracks user progress in courses
+  ownedTeams      Team[]         @relation("OwnedTeams")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+// Subscription table for managing subscriptions
+model Subscription {
+  id           Int             @id @default(autoincrement())
+  name         String
+  userId       String?          // Nullable for team subscriptions
+  teamId       Int?             @unique // Unique to enforce one-to-one relation
+  user         User?            @relation(fields: [userId], references: [id])
+  team         Team?            @relation(fields: [teamId], references: [id])
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+// Progress table for tracking user progress in courses and lessons
+model Progress {
+  id           Int             @id @default(autoincrement())
+  userId       String
+  courseId     Int
+  lessonId     Int?             // Nullable: Tracks the current lesson
+  user         User             @relation(fields: [userId], references: [id])
+  course       Course           @relation(fields: [courseId], references: [id])
+  lesson       Lesson?          @relation(fields: [lessonId], references: [id])
+  completed    Boolean          @default(false) // Tracks if the course is completed
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([userId, courseId])  // A user can only track progress for a course once
+}
+
+// Course table for managing courses
+model Course {
+  id           Int             @id @default(autoincrement())
+  title        String
+  description  String
+  progressions Progress[]       // Tracks progress in this course
+  lessons      Lesson[]         // Links lessons to the course
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+// Lesson table for course lessons
+model Lesson {
+  id           Int             @id @default(autoincrement())
+  title        String
+  description  String
+  courseId     Int
+  course       Course           @relation(fields: [courseId], references: [id])
+  progressions Progress[]
+  sections     LessonSection[]  // Tracks sections within this lesson
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+// LessonSection table for managing specific sections within lessons
+model LessonSection {
+  id           Int             @id @default(autoincrement())
+  title        String
+  content      String          // The content of the section
+  lessonId     Int
+  lesson       Lesson           @relation(fields: [lessonId], references: [id])
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([lessonId, title])  // Ensure unique sections within a lesson based on title
+}
+
+// Team table for managing teams
+model Team {
+  id            Int             @id @default(autoincrement())
+  name          String
+  ownerId       String
+  owner         User            @relation("OwnedTeams", fields: [ownerId], references: [id])
+  memberships   TeamMembership[]
+  subscription  Subscription?   // Relation is handled on the Subscription model
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+// Team Membership table for users in a team
+model TeamMembership {
+  id            Int             @id @default(autoincrement())
+  userId        String
+  teamId        Int
+  user          User            @relation(fields: [userId], references: [id])
+  team          Team            @relation(fields: [teamId], references: [id])
+  role          String          @default("member") // Roles: 'member', 'admin'
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@unique([userId, teamId])    // Ensure a user cannot join the same team multiple times
+}
