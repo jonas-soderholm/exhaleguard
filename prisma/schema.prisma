@@ -13,104 +13,48 @@ datasource db {
 //   directUrl = env("DIRECT_URL")
 // }
 
-// User table mapped to Supabase auth.users
+
+// User table
 model User {
-  id             String         @id // Supabase auth.users.id
-  subscriptions  Subscription[]
-  teamMemberships TeamMembership[]
-  progressions    Progress[]     // Tracks user progress in courses
-  ownedTeams      Team[]         @relation("OwnedTeams")
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id            String     @id // Supabase auth.users.id
+  email         String     @unique
+  subscriptions Subscription[]
+  progress      Progress[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
-// Subscription table for managing subscriptions
+// Subscription table
 model Subscription {
-  id           Int             @id @default(autoincrement())
-  name         String
-  userId       String?          // Nullable for team subscriptions
-  teamId       Int?             @unique // Unique to enforce one-to-one relation
-  user         User?            @relation(fields: [userId], references: [id])
-  team         Team?            @relation(fields: [teamId], references: [id])
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id          Int      @id @default(autoincrement())
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
 }
 
-// Progress table for tracking user progress in courses and lessons
+// Progress table
 model Progress {
-  id           Int             @id @default(autoincrement())
-  userId       String
-  courseId     Int
-  lessonId     Int?             // Nullable: Tracks the current lesson
-  user         User             @relation(fields: [userId], references: [id])
-  course       Course           @relation(fields: [courseId], references: [id])
-  lesson       Lesson?          @relation(fields: [lessonId], references: [id])
-  completed    Boolean          @default(false) // Tracks if the course is completed
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
+  id          Int      @id @default(autoincrement())
+  userId      String
+  courseNr    Int
+  lessonNr    Int      @default(0) // Number of lessons completed
+  sectionNr   Int      @default(0) // Number of sections completed
+  completed   Boolean  @default(false) // Tracks if the course is fully completed
+  user        User     @relation(fields: [userId], references: [id])
+  course      Course   @relation(fields: [courseNr], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@unique([userId, courseId])  // A user can only track progress for a course once
+  @@unique([userId, courseNr]) // Ensure a single progress row per user per course
 }
 
-// Course table for managing courses
+// Course table
 model Course {
-  id           Int             @id @default(autoincrement())
-  title        String
-  description  String
-  progressions Progress[]       // Tracks progress in this course
-  lessons      Lesson[]         // Links lessons to the course
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-}
-
-// Lesson table for course lessons
-model Lesson {
-  id           Int             @id @default(autoincrement())
-  title        String
-  description  String
-  courseId     Int
-  course       Course           @relation(fields: [courseId], references: [id])
-  progressions Progress[]
-  sections     LessonSection[]  // Tracks sections within this lesson
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-}
-
-// LessonSection table for managing specific sections within lessons
-model LessonSection {
-  id           Int             @id @default(autoincrement())
-  title        String
-  content      String          // The content of the section
-  lessonId     Int
-  lesson       Lesson           @relation(fields: [lessonId], references: [id])
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @updatedAt
-
-  @@unique([lessonId, title])  // Ensure unique sections within a lesson based on title
-}
-
-// Team table for managing teams
-model Team {
-  id            Int             @id @default(autoincrement())
-  name          String
-  ownerId       String
-  owner         User            @relation("OwnedTeams", fields: [ownerId], references: [id])
-  memberships   TeamMembership[]
-  subscription  Subscription?   // Relation is handled on the Subscription model
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-}
-
-// Team Membership table for users in a team
-model TeamMembership {
-  id            Int             @id @default(autoincrement())
-  userId        String
-  teamId        Int
-  user          User            @relation(fields: [userId], references: [id])
-  team          Team            @relation(fields: [teamId], references: [id])
-  role          String          @default("member") // Roles: 'member', 'admin'
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-
-  @@unique([userId, teamId])    // Ensure a user cannot join the same team multiple times
+  id        Int      @id @default(autoincrement())
+  name      String   @default("Default Course Name") // Add a default value
+  progress  Progress[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

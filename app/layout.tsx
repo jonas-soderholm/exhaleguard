@@ -2,6 +2,7 @@ import { ThemeProvider } from "next-themes";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import Header from "@/components/header/Header";
+import Footer from "@/components/footer/Footer";
 import BreadCrumbs from "@/components/breadcrumbs/BreadCrumbs";
 import { Logo } from "./constants/logo";
 
@@ -51,11 +52,7 @@ export default function RootLayout({
 
             <BreadCrumbs />
             <div className="flex-1">{children}</div>
-
-            {/* Footer Section */}
-            <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-8">
-              <p>ExhaleGuard</p>
-            </footer>
+            <Footer />
           </main>
         </ThemeProvider>
       </body>

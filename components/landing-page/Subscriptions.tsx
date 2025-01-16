@@ -26,8 +26,7 @@ export default function Subscriptions() {
     },
     {
       title: "Team (Coming Soon)",
-      description:
-        "Invite team members and track their course progression. 11$ per seat.",
+      description: `Invite team members and track their course progression. ${Prices.Team} per seat.`,
       image:
         "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
       active: false,

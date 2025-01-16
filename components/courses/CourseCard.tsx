@@ -1,24 +1,28 @@
-import Link from "next/link";
+import ProgressBar from "./ProgressBar";
 
 type CourseCardProps = {
   title: string;
+  courseNr: number;
+  lessonAmount: number;
   description: string;
   buttonText: string;
   image: string;
-  value: number;
   linkUrl: string;
+  progress: number; // Include progress prop
+  onClick?: () => void;
 };
 
 export default function CourseCard({
   title,
   description,
   image,
-  value,
   buttonText,
   linkUrl,
+  progress, // Destructure progress
+  onClick,
 }: CourseCardProps) {
   return (
-    <div className="relative w-full sm:w-[30rem] md:w-[35rem] lg:w-[35rem] overflow-hidden rounded-lg">
+    <div className="relative w-full sm:w-[30rem] md:w-[35rem] lg:w-[35rem] overflow-hidden rounded-lg mb-6">
       {/* Image */}
       <img
         src={image}
@@ -33,29 +37,21 @@ export default function CourseCard({
           <h1 className="text-lg md:text-[1.5rem] text-slate-200 font-bold max-w-[16rem] md:max-w-[30rem] ">
             {title}
           </h1>
-          <p className="text-slate-200 text-xs sm:text-sm mt-2 max-w-[27rem]">
+          <p className="text-slate-200 text-xs sm:text-sm mt-2 max-w-[18.5rem] sm:max-w-[25rem] md:max-w-[27rem]">
             {description}
           </p>
         </div>
 
-        <Link href={linkUrl}>
-          <button className="btn-custom-primary-course">{buttonText}</button>
-        </Link>
+        <a href={linkUrl}>
+          <button onClick={onClick} className="btn-custom-primary-course">
+            {buttonText}
+          </button>
+        </a>
       </div>
 
       {/* Progress Indicator */}
-      <div
-        className="radial-progress absolute text-[12px] sm:text-[12px] bg-secondary top-2 right-2"
-        style={
-          {
-            "--value": value,
-            "--size": "2rem",
-            "--thickness": "4px",
-          } as React.CSSProperties
-        }
-        role="progressbar"
-      >
-        {value}%
+      <div className="absolute top-2 right-2">
+        <ProgressBar progressValue={progress} />
       </div>
     </div>
   );

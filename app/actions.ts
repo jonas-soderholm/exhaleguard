@@ -68,6 +68,7 @@ export const signInAction = async (formData: FormData) => {
       await prisma.user.create({
         data: {
           id: sessionUser.id,
+          email: sessionUser.email || "",
           createdAt: new Date(),
           updatedAt: new Date(),
         },

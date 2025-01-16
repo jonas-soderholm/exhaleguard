@@ -12,16 +12,19 @@ const BreadCrumbs = () => {
     return null;
   }
 
+  // Map over path segments and create breadcrumbs
   const breadcrumbArray = paths.map((path, index) => {
     const href = `/${paths.slice(0, index + 1).join("/")}`;
-    return {
-      label: path.replace("-", " ").replace(/^\w/, (c) => c.toUpperCase()), // Capitalize first letter only
-      href: href,
-    };
-  });
 
+    // Replace hyphens with spaces and capitalize each word
+    const label = path
+      .replace(/-/g, " ") // Replace all hyphens with spaces
+      .replace(/\b\w/g, (c) => c.toUpperCase()); // Capitalize each word
+
+    return { label, href };
+  });
   return (
-    <div className="breadcrumbs text-[9px] md:text-xs fixed top-0 left-0 w-full z-50 bg-transparent px-4 py-2 mt-[4rem]">
+    <div className="breadcrumbs text-[9px] md:text-xs top-0 left-0 w-full bg-transparent px-4 py-2 mt-2">
       <ul className="flex flex-wrap space-x-2">
         <li>
           <Link href="/" className="dark:text-gray-300 hover:underline">

@@ -45,5 +45,8 @@
     "tailwindcss-animate": "^1.0.7",
     "ts-node": "^10.9.2",
     "typescript": "5.3.3"
+  },
+  "prisma": {
+    "seed": "node --loader ts-node/esm ./prisma/seed.ts"
   }
 }
