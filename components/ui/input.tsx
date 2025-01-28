@@ -25,6 +25,7 @@
 // export { Input };
 
 import * as React from "react";
+import PropTypes from "prop-types";
 import { cn } from "@/lib/utils";
 
 const Input = React.forwardRef<
@@ -43,6 +44,13 @@ const Input = React.forwardRef<
     />
   );
 });
+
 Input.displayName = "Input";
+
+// Add PropTypes validation if needed
+Input.propTypes = {
+  className: PropTypes.string,
+  type: PropTypes.string,
+};
 
 export { Input };

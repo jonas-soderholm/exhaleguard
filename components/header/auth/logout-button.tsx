@@ -14,7 +14,7 @@ export default function LogoutButton({ onClick }: LogoutButtonProps) {
     setIsClient(true);
   }, []);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = () => {
     // If onClick is passed down, call it (e.g., closeDrawer)
     if (onClick) {
       onClick();

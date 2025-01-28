@@ -5,13 +5,6 @@ import { usePathname } from "next/navigation";
 import LessonEngine from "@/components/lessons/LessonEngine";
 import { CourseInfo } from "@/constants/course-info";
 
-interface LessonData {
-  lessonsOverviewUrl: string;
-  sections: string[];
-  courseNr: number;
-  [key: string]: any; // You can refine this if you know the exact shape of the data
-}
-
 export default function LessonClient({
   courseSlug,
   lesson,
