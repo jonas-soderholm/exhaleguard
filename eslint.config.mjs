@@ -43,13 +43,13 @@ export default [
       "react/no-unescaped-entities": "off",
 
       // Adjust @typescript-eslint/ban-ts-comment to allow @ts-ignore
-      "@typescript-eslint/ban-ts-comment": [
-        "error",
-        {
-          "ts-ignore": false, // Allow @ts-ignore
-          "ts-expect-error": true, // Allow @ts-expect-error
-        },
-      ],
+      // "@typescript-eslint/ban-ts-comment": [
+      //   "error",
+      //   {
+      //     "ts-ignore": false, // Allow @ts-ignore
+      //     "ts-expect-error": true, // Allow @ts-expect-error
+      //   },
+      // ],
     },
   },
 ];

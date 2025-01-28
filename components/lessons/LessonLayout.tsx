@@ -111,14 +111,24 @@ const LessonContent: React.FC<LessonContentProps> = ({
             .slice(0, currentContentIndex + 1)
             .map((text, index) => (
               <div key={index} className="mb-4">
-                {sections[currentSectionIndex].images &&
-                  sections[currentSectionIndex].images[index] && (
-                    <img
-                      src={sections[currentSectionIndex].images[index]}
-                      alt={`Image for ${text}`}
-                      className="mt-2 rounded-lg max-w-full mx-auto"
-                    />
-                  )}
+                {sections[currentSectionIndex]?.content.map(
+                  (text: string, index: number) => {
+                    const imageSrc =
+                      sections[currentSectionIndex]?.images?.[index]; // Safely access images[index]
+                    return (
+                      <div key={index} className="mb-4">
+                        {imageSrc && (
+                          <img
+                            src={imageSrc}
+                            alt={`Image for ${text}`}
+                            className="mt-2 rounded-lg max-w-full mx-auto"
+                          />
+                        )}
+                        <p className="animate-fade-in">{text}</p>
+                      </div>
+                    );
+                  }
+                )}
                 <p className="animate-fade-in">{text}</p>
               </div>
             ))}

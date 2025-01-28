@@ -38,13 +38,7 @@ export default async function AccountLayout() {
     },
     {
       name: "Team",
-      content: (
-        <Team
-          email={accountData.email}
-          subscribed={accountData.subscribed}
-          daysLeft={accountData.daysLeft}
-        />
-      ),
+      content: <Team />,
     },
     {
       name: "Invoices",
