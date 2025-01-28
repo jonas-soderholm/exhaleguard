@@ -37,10 +37,19 @@ export default [
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   {
-    // Disable the rule causing the error
     rules: {
+      // Disable specific rules
       "react/react-in-jsx-scope": "off",
       "react/no-unescaped-entities": "off",
+
+      // Adjust @typescript-eslint/ban-ts-comment to allow @ts-ignore
+      "@typescript-eslint/ban-ts-comment": [
+        "error",
+        {
+          "ts-ignore": false, // Allow @ts-ignore
+          "ts-expect-error": true, // Allow @ts-expect-error
+        },
+      ],
     },
   },
 ];

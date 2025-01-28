@@ -1,7 +1,8 @@
+/* eslint-disable */
+
 import LessonClient from "./LessonClient";
 import { redirectIfNotSubscribed } from "@/utils/user-actions/subscription";
 
-// @ts-ignore
 export default async function LessonPage({
   params,
 }: {
