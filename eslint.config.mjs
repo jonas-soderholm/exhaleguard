@@ -22,13 +22,24 @@ import pluginReact from "eslint-plugin-react";
 export default [
   {
     files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
-    rules: {
-      "react/react-in-jsx-scope": "off", // Disable the rule to allow JSX without React import
+    languageOptions: {
+      parser: "@babel/eslint-parser",
+      globals: globals.browser,
     },
   },
-  { files: ["**/*.js"], languageOptions: { sourceType: "script" } },
-  { languageOptions: { globals: globals.browser } },
+  {
+    files: ["**/*.js"],
+    languageOptions: {
+      sourceType: "script",
+    },
+  },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
+  {
+    // Disable the rule causing the error
+    rules: {
+      "react/react-in-jsx-scope": "off",
+    },
+  },
 ];
