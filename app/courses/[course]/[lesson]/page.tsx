@@ -18,6 +18,7 @@
 
 import LessonClient from "./LessonClient";
 import { redirectIfNotSubscribed } from "@/utils/user-actions/subscription";
+import { Metadata } from "next";
 
 interface LessonPageProps {
   params: {
@@ -26,8 +27,12 @@ interface LessonPageProps {
   };
 }
 
+export const metadata: Metadata = {
+  title: "Lesson Page",
+};
+
 export default async function LessonPage({ params }: LessonPageProps) {
-  // Destructure course and lesson from params
+  // Ensure params are accessed properly
   const { course, lesson } = params;
 
   // Perform subscription check server-side
