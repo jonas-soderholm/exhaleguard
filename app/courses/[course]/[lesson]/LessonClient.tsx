@@ -98,6 +98,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import LessonEngine from "@/components/lessons/LessonEngine";
 import { CourseInfo } from "@/constants/course-info";
+import { Section } from "@/components/lessons/LessonLayout"; // Import the Section type
 
 // Define a type for the lesson data
 interface Lesson {
@@ -111,10 +112,9 @@ interface LessonButtons {
   }[];
 }
 
-// Define the structure of the data you're importing
 interface LessonData {
   lessonsOverviewUrl: string;
-  sections: any[]; // Replace 'any' with the correct type if possible
+  sections: Section[]; // Use the imported Section type
   courseNr: number;
 }
 
@@ -151,7 +151,7 @@ export default function LessonClient({
         // Dynamically import all lesson buttons for the course
         const lessonButtons = (await import(
           `@/data/lessons/${course}/all-lesson-buttons`
-        )) as LessonButtons; // Cast to the correct type
+        )) as LessonButtons;
 
         const allLessons = lessonButtons.default.flatMap(
           (level) => level.lessons
