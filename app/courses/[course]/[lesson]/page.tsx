@@ -18,21 +18,14 @@
 
 import LessonClient from "./LessonClient";
 import { redirectIfNotSubscribed } from "@/utils/user-actions/subscription";
-import { Metadata } from "next";
 
-interface LessonPageProps {
-  params: {
-    course: string;
-    lesson: string;
-  };
-}
-
-export const metadata: Metadata = {
-  title: "Lesson Page",
-};
-
-export default async function LessonPage({ params }: LessonPageProps) {
-  // Ensure params are accessed properly
+// Correctly typed for Next.js dynamic routes
+export default async function LessonPage({
+  params,
+}: {
+  params: Record<string, string>;
+}) {
+  // Destructure course and lesson
   const { course, lesson } = params;
 
   // Perform subscription check server-side
