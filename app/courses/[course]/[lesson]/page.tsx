@@ -1,5 +1,3 @@
-// @ts-nocheck
-/* eslint-disable */
 // Import necessary dependencies
 import LessonClient from "./LessonClient";
 import { redirectIfNotSubscribed } from "@/utils/user-actions/subscription";
@@ -8,7 +6,7 @@ import { redirectIfNotSubscribed } from "@/utils/user-actions/subscription";
 export default async function LessonPage({
   params,
 }: {
-  params: Record<string, string>; // Generic key-value object for dynamic routes
+  params: { course: string; lesson: string };
 }) {
   // Directly destructure params without resolving a promise
   const { course, lesson } = params;
