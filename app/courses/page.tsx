@@ -2,10 +2,7 @@ import CourseCard from "@/components/courses/CourseCard";
 import { allCourses } from "@/data/courses/all-courses";
 import { getLessonNr } from "@/utils/course-progression/course-progression-actions";
 import { getUserId } from "@/utils/user-actions/get-user";
-import {
-  isSubscribed,
-  createOrUpdateSubscription,
-} from "@/utils/user-actions/subscription";
+import { isSubscribed } from "@/utils/user-actions/subscription";
 
 export default async function AllCourses() {
   let userId: string | null = null;
@@ -37,6 +34,7 @@ export default async function AllCourses() {
     // Check if the user is subscribed
     subscribed = await isSubscribed();
   } catch (error) {
+    console.error("An error occurred:", error);
     // User not authenticated
     userId = null;
   }

@@ -40,6 +40,7 @@ export default [
     // Disable the rule causing the error
     rules: {
       "react/react-in-jsx-scope": "off",
+      "react/no-unescaped-entities": "off",
     },
   },
 ];

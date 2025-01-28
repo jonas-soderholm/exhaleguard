@@ -5,6 +5,13 @@ import { usePathname } from "next/navigation";
 import LessonEngine from "@/components/lessons/LessonEngine";
 import { CourseInfo } from "@/constants/course-info";
 
+interface LessonData {
+  lessonsOverviewUrl: string;
+  sections: string[];
+  courseNr: number;
+  [key: string]: any; // You can refine this if you know the exact shape of the data
+}
+
 export default function LessonClient({
   courseSlug,
   lesson,
@@ -22,7 +29,7 @@ export default function LessonClient({
 
   useEffect(() => {
     async function fetchLessonData() {
-      console.log("[DEBUG] Fetching lesson data for:", courseSlug, lesson);
+      // console.log("[DEBUG] Fetching lesson data for:", courseSlug, lesson);
 
       try {
         // Find the course in CourseInfo
@@ -42,7 +49,7 @@ export default function LessonClient({
           `@/data/lessons/${course}/all-lesson-buttons`
         );
 
-        console.log("[DEBUG] Imported Lesson Buttons:", lessonButtons);
+        // console.log("[DEBUG] Imported Lesson Buttons:", lessonButtons);
 
         const allLessons = lessonButtons.default.flatMap(
           (level: any) => level.lessons

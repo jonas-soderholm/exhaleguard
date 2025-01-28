@@ -14,6 +14,13 @@ export default function LogoutButton({ onClick }: LogoutButtonProps) {
     setIsClient(true);
   }, []);
 
+  const handleClick = (e: React.MouseEvent) => {
+    // If onClick is passed down, call it (e.g., closeDrawer)
+    if (onClick) {
+      onClick();
+    }
+  };
+
   return (
     <>
       {isClient && (
@@ -32,6 +39,7 @@ export default function LogoutButton({ onClick }: LogoutButtonProps) {
                 display: "flex",
                 alignItems: "center",
               }}
+              onClick={handleClick}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

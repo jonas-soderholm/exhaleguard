@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
         // Create the invoice in the database
         console.log("Creating invoice...");
-        const invoice = await prisma.invoice.create({
+        await prisma.invoice.create({
           data: {
             userId,
             amount,
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
         await createOrUpdateSubscription(userId);
 
         // Create the invoice in the database
-        const invoice = await prisma.invoice.create({
+        await prisma.invoice.create({
           data: {
             userId,
             amount,

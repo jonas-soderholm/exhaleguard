@@ -35,7 +35,7 @@ export default function LessonEngine({
   useEffect(() => {
     const fetchProgress = async () => {
       try {
-        let lessonNrFromDB = await getLessonNr(courseNr); // Fetch lessonNr from DB
+        const lessonNrFromDB = await getLessonNr(courseNr); // Fetch lessonNr from DB
         let sectionNr = 0;
 
         if (currentLessonIndex < lessonNrFromDB) {

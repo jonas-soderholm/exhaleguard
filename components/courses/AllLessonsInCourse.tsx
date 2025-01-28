@@ -18,9 +18,6 @@ interface Level {
   lessons: Lesson[];
 }
 
-// Export variable to capture the `done` state globally
-export let exportedDoneState: boolean | null = null;
-
 const preprocessLessons = (lessons: Level[], lessonNr: number): Level[] => {
   let currentIndex = 0; // Tracks the global lesson index
   return lessons.map((level) => ({
