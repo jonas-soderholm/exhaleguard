@@ -1,5 +1,4 @@
 import { getInvoice } from "@/utils/stripe/stripe-actions";
-import { getFullUser } from "@/utils/user-actions/get-user";
 
 type InvoiceData = {
   id: number;

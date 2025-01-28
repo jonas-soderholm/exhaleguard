@@ -1,5 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
 import Hero from "@/components/landing-page/Hero";
 import Subscriptions from "@/components/landing-page/Subscriptions";
 import { ValueProposition } from "@/components/landing-page/ValueProposition";

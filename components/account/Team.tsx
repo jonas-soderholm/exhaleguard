@@ -1,14 +1,4 @@
-type UserOverviewProps = {
-  email: string | null;
-  subscribed: boolean;
-  daysLeft: number | null;
-};
-
-export default function Team({
-  email,
-  subscribed,
-  daysLeft,
-}: UserOverviewProps) {
+export default function Team() {
   return (
     <div className="flex gap-4 items-center">
       <svg
