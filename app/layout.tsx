@@ -4,13 +4,13 @@ import "./globals.css";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 import BreadCrumbs from "@/components/breadcrumbs/BreadCrumbs";
-import { Logo } from "./constants/logo";
+import { LogoName } from "@/constants/logo-name";
 
-const defaultUrl = "http://localhost:3000";
+const defaultUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "XhaleGuard - Basic Cybersecurity Training",
+  title: `${LogoName.AppName} - Basic Cybersecurity Training`,
   description:
     "Learn cybersecurity and privacy fundamentals with beginner-friendly, interactive courses. Try 5 free lessons today—no login required.",
 };
@@ -31,12 +31,12 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap"
           rel="stylesheet"
         />
-        <title>ExhaleGuard - Basic Cybersecurity Training</title>
+        <title>PnagB- Basic Cybersecurity Training</title>
         <meta
           name="description"
           content="Learn cybersecurity and privacy fundamentals with beginner-friendly, interactive courses. Try 5 free lessons today—no login required."
         />
-        <link rel="icon" href={Logo.Tower} />
+        <link rel="icon" href={LogoName.Logo} />
       </head>
       <body className="bg-background text-foreground">
         <ThemeProvider

@@ -20,6 +20,7 @@ model User {
   email         String     @unique
   subscriptions Subscription[]
   progress      Progress[]
+  invoices      Invoice[] 
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 }
@@ -32,6 +33,18 @@ model Subscription {
   isActive    Boolean  @default(true)
   userId      String
   user        User     @relation(fields: [userId], references: [id])
+}
+
+// Invoice table
+model Invoice {
+  id          Int      @id @default(autoincrement())
+  payDate     DateTime
+  amount      Float    // Assuming you want to store the invoice amount
+  status      String   // e.g., "paid", "unpaid", "cancelled"
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  stripeRef   String  // Stripe payment reference
+  planMembers String
 }
 
 // Progress table

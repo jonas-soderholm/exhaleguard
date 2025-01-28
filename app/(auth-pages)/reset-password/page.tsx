@@ -4,7 +4,7 @@ import { SubmitButton } from "@/components/header/auth/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { Logo } from "@/app/constants/logo";
+import { LogoName } from "@/constants/logo-name";
 
 export default async function ResetPassword(props: {
   searchParams: Promise<Message>;
@@ -16,7 +16,7 @@ export default async function ResetPassword(props: {
       {/* Logo */}
       <div className="flex items-center font-semibold mt-[2rem] mb-2">
         <img
-          src={Logo.Tower}
+          src={LogoName.Logo}
           alt="Xhale Logo"
           className="w-6 md:w-14 mx-auto"
         />

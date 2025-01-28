@@ -3,7 +3,7 @@ import { FormMessage, Message } from "@/components/ui/form-message";
 import { SubmitButton } from "@/components/header/auth/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Logo } from "@/app/constants/logo";
+import { LogoName } from "@/constants/logo-name";
 import Link from "next/link";
 
 export default async function ForgotPassword(props: {
@@ -15,7 +15,11 @@ export default async function ForgotPassword(props: {
     <>
       {/* Logo */}
       <div className="flex items-center font-semibold mt-[2rem] mb-2">
-        <img src={Logo.Tower} alt="Xhale Logo" className="w-6 md:w-14 mx-4" />
+        <img
+          src={LogoName.Logo}
+          alt="Xhale Logo"
+          className="w-6 md:w-14 mx-4"
+        />
       </div>
       {/* Header */}
       <h1 className="text-lg mb-4">Reset Your Password</h1>

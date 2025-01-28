@@ -1,4 +1,8 @@
+"use client";
+
 import { LessonButton } from "@/components/courses/LessonButton";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 // Function to preprocess lessons based on progress
 interface Lesson {
@@ -13,6 +17,9 @@ interface Level {
   title: string;
   lessons: Lesson[];
 }
+
+// Export variable to capture the `done` state globally
+export let exportedDoneState: boolean | null = null;
 
 const preprocessLessons = (lessons: Level[], lessonNr: number): Level[] => {
   let currentIndex = 0; // Tracks the global lesson index
@@ -43,27 +50,57 @@ export default function AllLessonsInCourse({
 }: AllLessonsInCourseProps) {
   // Process lessons with progress
   const lessons = preprocessLessons(lessonsData, lessonNr);
+  const pathname = usePathname();
+  const initialRender = useRef(true);
+
+  // Rerender if user press back arrow in url to refresh progression
+  useEffect(() => {
+    if (initialRender.current) {
+      // Skip the first render
+      initialRender.current = false;
+      return;
+    }
+
+    console.log("[DEBUG] Pathname changed:", pathname);
+    window.location.reload();
+  }, [pathname]);
+
+  // Save scroll position when user leaves
+  useEffect(() => {
+    const handleScroll = () => {
+      localStorage.setItem("scrollPosition", window.scrollY.toString());
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // Restore scroll position on load
+  useEffect(() => {
+    const savedPosition = localStorage.getItem("scrollPosition");
+    if (savedPosition) {
+      window.scrollTo(0, parseInt(savedPosition, 10));
+    }
+  }, []);
 
   return (
-    <div className="flex flex-col items-center gap-8 p-6">
+    <div className="flex flex-col items-center gap-6 p-6">
       {/* Page Title */}
       <h1 className="text-xl md:text-3xl font-bold text-center">
         {lessonName}
       </h1>
 
       {/* Flowchart for Courses */}
-      {lessons.map((lesson, courseIndex) => (
-        <>
-          <h2 className="text-lg text-left">{lesson.title}</h2>
-          <div
-            key={courseIndex}
-            className="bg-gray-700 p-6 rounded-lg border border-gray-500 max-w-[40rem] w-full"
-          >
-            {/* Course Title */}
-
+      {lessons.map((lessonGroup, courseIndex) => (
+        <div key={courseIndex} className=" w-full max-w-3xl">
+          <h2 className="text-lg text-center mb-6">{lessonGroup.title}</h2>
+          <div className="bg-gray-700 p-6 rounded-lg border border-gray-500">
             <ul className="timeline timeline-vertical relative">
-              {lesson.lessons.map((lesson, index) => (
-                <li key={index} className="relative">
+              {lessonGroup.lessons.map((lesson, lessonIndex) => (
+                <li key={lessonIndex} className="relative">
                   {/* Lesson Content */}
                   <div
                     className={`timeline-${lesson.position} timeline-box bg-transparent border-transparent shadow-none`}
@@ -107,7 +144,7 @@ export default function AllLessonsInCourse({
               ))}
             </ul>
           </div>
-        </>
+        </div>
       ))}
     </div>
   );

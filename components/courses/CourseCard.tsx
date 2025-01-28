@@ -1,3 +1,6 @@
+"use client";
+
+import { createCourseAndProgress } from "@/utils/course-progression/course-progression-actions";
 import ProgressBar from "./ProgressBar";
 
 type CourseCardProps = {
@@ -8,19 +11,29 @@ type CourseCardProps = {
   buttonText: string;
   image: string;
   linkUrl: string;
-  progress: number; // Include progress prop
-  onClick?: () => void;
+  progress: number;
 };
 
 export default function CourseCard({
   title,
+  courseNr,
   description,
-  image,
   buttonText,
+  image,
   linkUrl,
-  progress, // Destructure progress
-  onClick,
+  progress,
 }: CourseCardProps) {
+  const handleCourseClick = async () => {
+    try {
+      // Ensure course and progress creation
+      await createCourseAndProgress(courseNr);
+      // Redirect to the course URL
+      window.location.href = linkUrl;
+    } catch (error) {
+      console.error("Error creating course and progress:", error);
+    }
+  };
+
   return (
     <div className="relative w-full sm:w-[30rem] md:w-[35rem] lg:w-[35rem] overflow-hidden rounded-lg mb-6">
       {/* Image */}
@@ -42,14 +55,15 @@ export default function CourseCard({
           </p>
         </div>
 
-        <a href={linkUrl}>
-          <button onClick={onClick} className="btn-custom-primary-course">
-            {buttonText}
-          </button>
-        </a>
+        <button
+          onClick={handleCourseClick}
+          className="btn-custom-primary-course w-[10rem]"
+        >
+          {buttonText}
+        </button>
       </div>
 
-      {/* Progress Indicator */}
+      {/* Progress */}
       <div className="absolute top-2 right-2">
         <ProgressBar progressValue={progress} />
       </div>

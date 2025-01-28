@@ -1,3 +1,5 @@
+import { LogoName } from "@/constants/logo-name";
+
 export function ValueProposition() {
   const cards = [
     {
@@ -7,7 +9,7 @@ export function ValueProposition() {
       image: "/value-propositions-images/question-mark-shield.svg",
     },
     {
-      title: "Why ExhaleGuard?",
+      title: `Why ${LogoName.AppName}?`,
       description:
         "Our easy-to-learn courses cover essential cybersecurity practices, giving your team a solid foundation—even if they have no prior experience. Making sure everyone in the team is on the same page.",
       image: "/value-propositions-images/head-wheel.svg",

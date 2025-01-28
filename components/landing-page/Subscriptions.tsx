@@ -1,12 +1,12 @@
-import { Prices } from "@/app/constants/prices";
+import { LogoName } from "@/constants/logo-name";
+import { Prices } from "@/constants/prices";
 import Link from "next/link";
 
 export default function Subscriptions() {
   const subscriptions = [
     {
       title: "Free",
-      description:
-        "5 Lessons for free. Try them out and see if XhaleGuard is for you.",
+      description: `5 Lessons for free. Try them out and see if ${LogoName.AppName} is for you or your team.`,
       image:
         "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
       active: true,
@@ -21,25 +21,25 @@ export default function Subscriptions() {
         "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
       active: true,
       price: Prices.Individual,
-      buttontext: "Subscribe",
-      route: "/subscribe",
+      buttontext: "Get Access",
+      route: "/account?tab=1",
     },
     {
-      title: "Team (Coming Soon)",
-      description: `Invite team members and track their course progression. ${Prices.Team} per seat.`,
+      title: "Team",
+      description: `Add team members at a discounted rate (minimum of 2 seats).`,
       image:
         "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
       active: false,
       price: Prices.Team,
-      buttontext: "Coming Soon",
-      route: "/subscribe",
+      buttontext: "Get Access",
+      route: "/account?tab=2",
     },
   ];
 
   return (
     <>
       <div className="flex justify-center mx-auto font-bold text-3xl mb-14 mt-[10rem]">
-        ExhaleGuard Course Pricing
+        Pricing
       </div>
 
       <div className="flex flex-wrap justify-center max-w-[80rem] mx-auto px-4 gap-8 text-slate-200">
@@ -52,7 +52,7 @@ export default function Subscriptions() {
               <h2 className="card-title mb-5">{subscription.title}</h2>
               <div className="price">
                 <div className="my-5 text-[4rem] font-bold">
-                  {subscription.price}$<span className="text-sm">/mo</span>
+                  {subscription.price}$
                 </div>
               </div>
 

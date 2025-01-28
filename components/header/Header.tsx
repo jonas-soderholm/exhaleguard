@@ -2,7 +2,7 @@ import Link from "next/link";
 import NavigationDrawer from "./NavigationDrawer";
 import { ThemeSwitcher } from "../ui/theme-switcher";
 import { createClient } from "@/utils/supabase/server";
-import { Logo } from "../../app/constants/logo";
+import { LogoName } from "@/constants/logo-name";
 
 export default async function Header() {
   const supabase = await createClient();
@@ -19,12 +19,12 @@ export default async function Header() {
           <Link href="/">
             <div className="flex items-center font-semibold">
               <img
-                src={Logo.Tower}
+                src={LogoName.Logo}
                 alt="Xhale Logo"
                 className="w-6 md:w-10 mx-3"
               />
               <span className="text-[20px] md:text-2xl font-bold text-slate-200 ml-[-5px]">
-                ExhaleGuard
+                {LogoName.AppName}
               </span>
             </div>
           </Link>

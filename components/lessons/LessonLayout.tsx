@@ -1,10 +1,10 @@
 import React from "react";
-import Image from "next/image";
 import "./lesson.css";
 import Link from "next/link";
 
 export interface Section {
   id: number;
+  link: string;
   content: string[];
   question: string;
   answerKeywords: string[];
@@ -24,7 +24,7 @@ interface LessonContentProps {
   completedSections: Section[];
   feedback: string;
   userInput: string;
-  isAnimating: boolean; // Add this property
+  isAnimating: boolean;
   handleNext: () => void;
   handleSubmit: () => void;
   setUserInput: (value: string) => void;
@@ -49,7 +49,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
   return (
     <>
       {/* Completed Sections */}
-      <div className="w-full max-w-2xl p-4 rounded-lg mb-6">
+      <div className=" animate-fade-in w-full max-w-2xl p-4 rounded-lg mb-6">
         <div className="flex flex-col gap-4">
           {completedSections.map((section) => (
             <div
@@ -69,8 +69,8 @@ const LessonContent: React.FC<LessonContentProps> = ({
                   <p className="text-sm">{text}</p>
                 </div>
               ))}
-              <p className="font-semibold mt-2">{section.question}</p>
-              <p className="text-green-600 font-bold mt-1 flex items-center gap-2">
+              <div className="font-semibold mt-2">{section.question}</div>
+              <div className="text-green-600 font-bold mt-1 flex items-center gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -95,7 +95,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                     </div>
                   ))}
                 </div>
-              </p>
+              </div>
             </div>
           ))}
         </div>
@@ -119,7 +119,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                       className="mt-2 rounded-lg max-w-full mx-auto"
                     />
                   )}
-                <p className=" animate-fade-in">{text}</p>
+                <p className="animate-fade-in">{text}</p>
               </div>
             ))}
           {currentContentIndex ===
@@ -137,7 +137,10 @@ const LessonContent: React.FC<LessonContentProps> = ({
                   className="border border-gray-300 rounded-lg p-2 w-full"
                 />
                 <button
-                  onClick={handleSubmit}
+                  onClick={() => {
+                    handleSubmit();
+                    handleNext();
+                  }}
                   className="bg-blue-500 text-white p-2 rounded-lg"
                 >
                   Submit
@@ -161,15 +164,12 @@ const LessonContent: React.FC<LessonContentProps> = ({
                       >
                         <circle cx="12" cy="12" r="10" fill="currentColor" />
                         <g transform="translate(0, 2)">
-                          {" "}
-                          {/* Moves the checkmark down by 2 units */}
                           <path
                             d="M16.53 8.53a.75.75 0 0 0-1.06-1.06L10 12.94l-2.47-2.47a.75.75 0 0 0-1.06 1.06l3 3a.75.75 0 0 0 1.06 0l6-6z"
                             fill="white"
                           />
                         </g>
                       </svg>
-
                       <span>{feedback}</span>
                     </>
                   ) : (
@@ -205,15 +205,15 @@ const LessonContent: React.FC<LessonContentProps> = ({
 
       {/* Lesson Completed */}
       {isLessonCompleted && (
-        <div className="  p-4 rounded-lg text-center mb-[10rem]">
-          <h2 className="text-3xl">🥳</h2>
+        <div className="p-4 rounded-lg text-center mb-[10rem]">
+          <h2 className="text-3xl">🎉</h2>
           <h2 className="text-3xl font-bold text-green-600 my-2">
             Congratulations!
           </h2>
           <p className="text-lg">You’ve completed the lesson.</p>
           <Link href={lessonsOverviewUrl}>
             <button className="btn-custom-primary-reverse mt-4">
-              Back For More Lessons
+              Back to Lessons Overview
             </button>
           </Link>
         </div>

@@ -4,7 +4,7 @@ import { SubmitButton } from "@/components/header/auth/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { Logo } from "@/app/constants/logo";
+import { LogoName } from "@/constants/logo-name";
 
 export default async function Signup(props: {
   searchParams: Promise<Message>;
@@ -15,10 +15,14 @@ export default async function Signup(props: {
     <>
       {/* Logo */}
       <div className="flex items-center font-semibold mt-[2rem] mb-2">
-        <img src={Logo.Tower} alt="Xhale Logo" className="w-6 md:w-14 mx-4" />
+        <img
+          src={LogoName.Logo}
+          alt="Xhale Logo"
+          className="w-6 md:w-14 mx-4"
+        />
       </div>
       {/* Header */}
-      <h1 className="text-lg mb-4">Sign up to ExhaleGuard</h1>
+      <h1 className="text-lg mb-4">Sign up to {LogoName.AppName}</h1>
       {/* Form */}
       <div className="flex justify-center items-center bg-base-300 px-6 py-6 rounded-lg border-slate-700 border-2 w-[350px] mx-auto">
         <form className="flex-1 flex flex-col" action={signUpAction}>
