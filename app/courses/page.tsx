@@ -2,7 +2,7 @@ import CourseCard from "@/components/courses/CourseCard";
 import { allCourses } from "@/data/courses/all-courses";
 import { getCourseWithProgress } from "@/utils/course-progression/course-progression-actions";
 import { getUserId } from "@/utils/user-actions/get-user";
-import { isSubscribed } from "@/utils/user-actions/subscription";
+import { isSubscribedNew } from "@/utils/user-actions/subscription";
 
 export default async function AllCourses() {
   let userId: string | null = null;
@@ -10,7 +10,7 @@ export default async function AllCourses() {
 
   try {
     userId = await getUserId();
-    subscribed = await isSubscribed();
+    subscribed = await isSubscribedNew(userId);
   } catch (error) {
     console.error("An error occurred:", error);
     userId = null;
@@ -22,6 +22,7 @@ export default async function AllCourses() {
       userId && subscribed
         ? await getCourseWithProgress(course.courseNr, userId)
         : { progress: { lessonNr: 0, sectionNr: 0, completed: false } };
+
     const courseProgress = Math.min(
       (progress.lessonNr / course.lessonAmount) * 100,
       100
