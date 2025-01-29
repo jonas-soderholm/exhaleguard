@@ -159,6 +159,21 @@ export async function getLessonNr(courseNr: number) {
   }
 }
 
+export async function getAllLessonProgress(userId: string) {
+  try {
+    const progress = await prisma.progress.findMany({
+      where: { userId },
+      select: { courseNr: true, lessonNr: true },
+    });
+
+    // Convert results into a fast lookup Map
+    return new Map(progress.map((p) => [p.courseNr, p.lessonNr]));
+  } catch (error) {
+    console.error("Error retrieving lesson progress:", error);
+    return new Map(); // Return empty map on error
+  }
+}
+
 export async function getSectionNr(courseNr: number) {
   const userId = await getUserId(); // Obtain the user ID dynamically
   try {

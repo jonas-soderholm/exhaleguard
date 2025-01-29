@@ -103,7 +103,7 @@
 
 import CourseCard from "@/components/courses/CourseCard";
 import { allCourses } from "@/data/courses/all-courses";
-import { getLessonNr } from "@/utils/course-progression/course-progression-actions";
+import { getAllLessonProgress } from "@/utils/course-progression/course-progression-actions";
 import { getUserId } from "@/utils/user-actions/get-user";
 import { isSubscribed } from "@/utils/user-actions/subscription";
 
@@ -112,7 +112,6 @@ export default async function AllCourses() {
   let subscribed = false;
 
   try {
-    // Fetch the user ID
     userId = await getUserId();
     subscribed = await isSubscribed();
   } catch (error) {
@@ -120,45 +119,25 @@ export default async function AllCourses() {
     userId = null;
   }
 
-  // Fetch progress for all courses in parallel
-  const courseProgress =
+  // Fetch all course progress in one DB query
+  const progressMap =
     userId && subscribed
-      ? await Promise.allSettled(
-          allCourses.map(async (course) => {
-            try {
-              const lessonNr = await getLessonNr(course.courseNr);
-              return {
-                courseNr: course.courseNr,
-                progress: Math.min((lessonNr / course.lessonAmount) * 100, 100),
-              };
-            } catch (error) {
-              console.error(
-                `Failed to fetch progress for course ${course.courseNr}:`,
-                error
-              );
-              return { courseNr: course.courseNr, progress: 0 }; // Default to 0% on failure
-            }
-          })
-        )
-      : [];
-
-  // Convert results into a fast lookup map
-  const progressMap = new Map();
-  courseProgress.forEach((result) => {
-    if (result.status === "fulfilled") {
-      progressMap.set(result.value.courseNr, result.value.progress);
-    }
-  });
+      ? await getAllLessonProgress(userId) // ✅ Fetch ALL progress at once
+      : new Map();
 
   return (
     <>
       <h1 className="text-3xl font-bold text-center my-8">Courses</h1>
       <div className="flex flex-col items-center px-4">
         {allCourses.map((course) => {
-          // Use progressMap instead of incorrect courseProgress.find()
-          const progress = progressMap.get(course.courseNr) || 0;
+          // ✅ Ensure progress is calculated correctly as a percentage
+          const progress = progressMap.has(course.courseNr)
+            ? Math.min(
+                (progressMap.get(course.courseNr)! / course.lessonAmount) * 100,
+                100
+              )
+            : 0;
 
-          // Determine button text based on user state
           const buttonText = !userId
             ? "Sign In"
             : !subscribed
@@ -169,7 +148,6 @@ export default async function AllCourses() {
                   ? "Revisit Course"
                   : "Continue";
 
-          // Determine link URL based on user state
           const linkUrl = !userId
             ? "/sign-in"
             : !subscribed
