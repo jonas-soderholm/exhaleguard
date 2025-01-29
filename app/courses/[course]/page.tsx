@@ -1,20 +1,27 @@
+import { redirect } from "next/navigation";
 import AllLessonsInCourse from "@/components/courses/AllLessonsInCourse";
 import { CourseInfo } from "@/constants/course-info";
 import { getLessonNr } from "@/utils/course-progression/course-progression-actions";
-import { redirectIfNotSubscribed } from "@/utils/user-actions/subscription";
-
-export const revalidate = 0;
+import { getUserId } from "@/utils/user-actions/get-user";
+import { isSubscribedNew } from "@/utils/user-actions/subscription";
 
 export default async function CoursePage({
   params: rawParams,
 }: {
   params: { course: string };
 }) {
-  await redirectIfNotSubscribed();
-
   const params = await Promise.resolve(rawParams); // Ensure params are awaited
-
   const { course } = params;
+
+  const [userId, isSubscribed] = await Promise.all([
+    getUserId(),
+    isSubscribedNew(await getUserId()),
+  ]);
+
+  // Redirect if not logged in or not subscribed
+  if (!userId || !isSubscribed) {
+    redirect("/sign-in");
+  }
 
   // Find the course dynamically based on the URL
   const courseEntry = Object.values(CourseInfo).find(
@@ -29,12 +36,6 @@ export default async function CoursePage({
   const lessonsData = await import(
     `@/data/lessons/${courseEntry.folderName}/all-lesson-buttons`
   );
-
-  // console.log(
-  //   "Dynamic import path:",
-  //   `@/data/lessons/${courseEntry.folderName}/all-lesson-buttons`
-  // );
-  // console.log("Imported lessonsData:", lessonsData);
 
   const resolvedLessons = lessonsData.default;
 
