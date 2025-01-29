@@ -27,16 +27,45 @@ export default function LessonEngine({
   const [userInput, setUserInput] = useState("");
   const [feedback, setFeedback] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
-  const hasFetched = useRef(false); // Track if data has already been fetched
 
   const scrollDown = (amount: number) => {
     window.scrollBy({ top: amount, behavior: "smooth" });
   };
 
-  useEffect(() => {
-    let isMounted = true;
+  // useEffect(() => {
+  //   const fetchProgress = async () => {
+  //     const userId = await getUserId();
 
-    if (hasFetched.current) return;
+  //     try {
+  //       const lessonNrFromDB = await getLessonNr(courseNr, userId);
+  //       const sectionNrFromDB = await getSectionNr(courseNr, userId); // Fetch lesson number
+  //       console.log("lessonNrFromDB", lessonNrFromDB); // Log lessonNrFromDB to verify
+
+  //       let sectionNr = 0;
+
+  //       if (currentLessonIndex < lessonNrFromDB) {
+  //         sectionNr = 1000;
+  //       } else {
+  //         sectionNr = sectionNrFromDB; // Adjust as necessary
+  //       }
+
+  //       console.log("sectionNr (before state update):", sectionNr); // Log before updating state
+
+  //       setCurrentSectionIndex(sectionNr); // Set progress
+  //       setCompletedSections(sections.slice(0, sectionNr)); // Mark sections as completed
+  //     } catch (error) {
+  //       console.error(`Error fetching progress for course ${courseNr}:`, error);
+  //     }
+  //   };
+
+  //   fetchProgress();
+  // }, []); // Trigger when courseNr, sections, or userId changes
+
+  const hasFetched = useRef(false); // Track if data has already been fetched
+  useEffect(() => {
+    let isMounted = true; // Prevents state updates if the component unmounts
+
+    if (hasFetched.current) return; // Stop duplicate fetches
     hasFetched.current = true;
 
     const fetchProgress = async () => {
@@ -44,15 +73,21 @@ export default function LessonEngine({
       if (!userId) return;
 
       try {
-        const { lessonNr, sectionNr } = await getProgress(courseNr, userId);
+        const lessonNrFromDB = await getProgress(courseNr, userId); // Fetch lesson number
+        console.log("lessonNrFromDB", lessonNrFromDB); // Log lessonNrFromDB to verify
 
-        let computedSectionNr =
-          currentLessonIndex < lessonNr ? 1000 : sectionNr;
+        let sectionNr = 0;
 
-        if (isMounted) {
-          setCurrentSectionIndex(computedSectionNr);
-          setCompletedSections(sections.slice(0, computedSectionNr));
+        if (currentLessonIndex < lessonNrFromDB.lessonNr) {
+          sectionNr = 1000;
+        } else {
+          sectionNr = lessonNrFromDB.sectionNr; // Adjust as necessary
         }
+
+        console.log("sectionNr (before state update):", sectionNr); // Log before updating state
+
+        setCurrentSectionIndex(sectionNr); // Set progress
+        setCompletedSections(sections.slice(0, sectionNr)); // Mark sections as completed
       } catch (error) {
         console.error(`Error fetching progress for course ${courseNr}:`, error);
       }
