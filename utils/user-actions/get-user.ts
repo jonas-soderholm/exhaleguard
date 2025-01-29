@@ -13,7 +13,7 @@ export async function getUserId() {
   } = await supabase.auth.getUser();
 
   // ✅ Instead of throwing an error, return `null`
-  return sessionUser ? sessionUser.id : null;
+  return sessionUser ? sessionUser.id : "";
 }
 
 export async function getUserEmail() {

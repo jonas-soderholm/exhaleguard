@@ -10,7 +10,7 @@ export default async function AllCourses() {
 
   try {
     userId = await getUserId();
-    subscribed = userId ? await isSubscribedNew(userId) : false;
+    subscribed = await isSubscribedNew(userId);
   } catch (error) {
     console.error("An error occurred:", error);
     userId = null;
