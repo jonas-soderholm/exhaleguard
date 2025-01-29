@@ -27,6 +27,38 @@ export const internetAllLessonButtons = [
       },
     ],
   },
+  {
+    courseNr: CourseInfo.InternetAndComputers.courseNr,
+    title: "Level 1",
+    lessons: [
+      {
+        name: "INTERNET: How Long Does It Take to Hack?",
+        link: "/internet-computer-basics",
+        position: "start",
+      },
+      {
+        name: "Who Can See Your Activity Online?",
+        link: "/who-can-see",
+        position: "end",
+      },
+    ],
+  },
+  {
+    courseNr: CourseInfo.InternetAndComputers.courseNr,
+    title: "Level 1",
+    lessons: [
+      {
+        name: "INTERNET: How Long Does It Take to Hack?",
+        link: "/internet-computer-basics",
+        position: "start",
+      },
+      {
+        name: "Who Can See Your Activity Online?",
+        link: "/who-can-see",
+        position: "end",
+      },
+    ],
+  },
 ];
 
 // Calculate the total number of lessons

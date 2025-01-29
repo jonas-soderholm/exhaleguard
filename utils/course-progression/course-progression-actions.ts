@@ -6,42 +6,30 @@ import { getUserId } from "../user-actions/get-user";
 export async function createCourseAndProgress(courseNr: number) {
   try {
     const userId = await getUserId();
-    await prisma.$transaction(async (tx) => {
-      // Create or ensure the course exists
-      await tx.course.upsert({
+
+    await prisma.$transaction([
+      prisma.course.upsert({
         where: { id: courseNr },
-        update: {}, // No updates for existing courses
+        update: {}, // No updates needed for existing courses
+        create: { id: courseNr, name: `Course ${courseNr}` },
+      }),
+      prisma.progress.upsert({
+        where: { userId_courseNr: { userId, courseNr } },
+        update: {}, // No updates needed for existing progress
         create: {
-          id: courseNr,
-          name: `Course ${courseNr}`,
-        },
-      });
-      // Create or ensure progress exists for the user and course
-      await tx.progress.upsert({
-        where: {
-          userId_courseNr: {
-            userId: userId,
-            courseNr: courseNr,
-          },
-        },
-        update: {}, // No updates for existing progress
-        create: {
-          userId: userId,
-          courseNr: courseNr,
+          userId,
+          courseNr,
           lessonNr: 0,
           sectionNr: 0,
           completed: false,
         },
-      });
-    });
-    // console.log(`Course ${courseNr} and progress for user ${userId} ensured.`);
+      }),
+    ]);
   } catch (error) {
     console.error(
-      `Error creating or ensuring course ${courseNr} and progress for user:`,
+      `Error ensuring course ${courseNr} and progress for user:`,
       error
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -69,6 +57,37 @@ export async function getCourseWithProgress(courseNr: number, userId?: string) {
       completed: false,
     },
   };
+}
+
+export async function ensureAndGetCourseProgress(courseNr: number) {
+  try {
+    const userId = await getUserId();
+
+    // ✅ Ensure course & progress exist, then fetch both in a single query
+    const [_, progress] = await prisma.$transaction([
+      prisma.course.upsert({
+        where: { id: courseNr },
+        update: {},
+        create: { id: courseNr, name: `Course ${courseNr}` },
+      }),
+      prisma.progress.upsert({
+        where: { userId_courseNr: { userId, courseNr } },
+        update: {},
+        create: {
+          userId,
+          courseNr,
+          lessonNr: 0,
+          sectionNr: 0,
+          completed: false,
+        },
+      }),
+    ]);
+
+    return progress;
+  } catch (error) {
+    console.error(`Error ensuring/fetching course ${courseNr}:`, error);
+    return { lessonNr: 0, sectionNr: 0, completed: false };
+  }
 }
 
 export async function updateLessonNr(courseNr: number) {
@@ -239,4 +258,55 @@ export async function courseCompleted(courseNr: number, userId: string) {
   } finally {
     await prisma.$disconnect();
   }
+}
+
+export async function ensureAndGetAllProgress(courseNumbers: number[]) {
+  const userId = await getUserId();
+
+  return prisma.$transaction(async (tx) => {
+    // ✅ Insert all courses without checking first
+    await tx.course.createMany({
+      data: courseNumbers.map((courseNr) => ({
+        id: courseNr,
+        name: `Course ${courseNr}`,
+      })),
+      skipDuplicates: true,
+    });
+
+    // ✅ Check which progress already exists
+    const existingProgress = new Map(
+      (
+        await tx.progress.findMany({
+          where: { userId, courseNr: { in: courseNumbers } },
+          select: {
+            courseNr: true,
+            lessonNr: true,
+            sectionNr: true,
+            completed: true,
+          },
+        })
+      ).map((p) => [p.courseNr, p])
+    );
+
+    // ✅ Insert missing progress only
+    const missingProgress = courseNumbers
+      .filter((courseNr) => !existingProgress.has(courseNr))
+      .map((courseNr) => ({
+        userId,
+        courseNr,
+        lessonNr: 0,
+        sectionNr: 0,
+        completed: false,
+      }));
+
+    if (missingProgress.length) {
+      await tx.progress.createMany({
+        data: missingProgress,
+        skipDuplicates: true,
+      });
+      missingProgress.forEach((p) => existingProgress.set(p.courseNr, p)); // Merge new progress
+    }
+
+    return existingProgress;
+  });
 }

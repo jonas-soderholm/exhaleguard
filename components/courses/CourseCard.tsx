@@ -1,6 +1,6 @@
 "use client";
 
-import { createCourseAndProgress } from "@/utils/course-progression/course-progression-actions";
+import { ensureAndGetCourseProgress } from "@/utils/course-progression/course-progression-actions";
 import { isSubscribed } from "@/utils/user-actions/subscription";
 
 import ProgressBar from "./ProgressBar";
@@ -31,7 +31,7 @@ export default function CourseCard({
       const subscribed = await isSubscribed();
 
       if (subscribed) {
-        await createCourseAndProgress(courseNr);
+        await ensureAndGetCourseProgress(courseNr);
       }
 
       // Redirect to the course URL
