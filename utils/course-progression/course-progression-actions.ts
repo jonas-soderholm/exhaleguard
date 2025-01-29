@@ -45,6 +45,32 @@ export async function createCourseAndProgress(courseNr: number) {
   }
 }
 
+// Fetch both Course and Progress in a single query
+export async function getCourseWithProgress(courseNr: number, userId?: string) {
+  const courseData = await prisma.course.findUnique({
+    where: { id: courseNr },
+    include: {
+      progress: {
+        where: { userId },
+        select: {
+          lessonNr: true,
+          sectionNr: true,
+          completed: true,
+        },
+      },
+    },
+  });
+
+  return {
+    course: courseData,
+    progress: courseData?.progress[0] || {
+      lessonNr: 0,
+      sectionNr: 0,
+      completed: false,
+    },
+  };
+}
+
 export async function updateLessonNr(courseNr: number) {
   const userId = await getUserId();
   try {
