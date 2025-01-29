@@ -42,17 +42,23 @@ export default async function AllCourses() {
   // Fetch progress for all courses if user is logged in and subscribed
   const courseProgress =
     userId && subscribed
-      ? await Promise.all(
-          allCourses.map(async (course) => {
-            const lessonNr = await getLessonNr(course.courseNr);
-            const progress = Math.min(
-              (lessonNr / course.lessonAmount) * 100,
-              100
-            ); // Clamp progress to 100%
-            return { courseNr: course.courseNr, progress };
-          })
+      ? await Promise.allSettled(
+          allCourses.map((course) =>
+            getLessonNr(course.courseNr).then((lessonNr) => ({
+              courseNr: course.courseNr,
+              progress: Math.min((lessonNr / course.lessonAmount) * 100, 100),
+            }))
+          )
         )
       : [];
+
+  // Convert results to usable data
+  const progressMap = new Map();
+  courseProgress.forEach((result) => {
+    if (result.status === "fulfilled") {
+      progressMap.set(result.value.courseNr, result.value.progress);
+    }
+  });
 
   return (
     <>
