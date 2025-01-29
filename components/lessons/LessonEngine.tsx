@@ -7,9 +7,8 @@ import LessonLoaderVisual from "./LessonLoaderVisual";
 import {
   updateLessonNr,
   updateSectionNr,
-  getLessonNr,
   resetSectionNr,
-  getSectionNr,
+  getProgress,
 } from "@/utils/course-progression/course-progression-actions";
 import { getUserId } from "@/utils/user-actions/get-user";
 
@@ -28,39 +27,43 @@ export default function LessonEngine({
   const [userInput, setUserInput] = useState("");
   const [feedback, setFeedback] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
+  const hasFetched = useRef(false); // Track if data has already been fetched
 
   const scrollDown = (amount: number) => {
     window.scrollBy({ top: amount, behavior: "smooth" });
   };
 
   useEffect(() => {
+    let isMounted = true;
+
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     const fetchProgress = async () => {
       const userId = await getUserId();
+      if (!userId) return;
 
       try {
-        const lessonNrFromDB = await getLessonNr(courseNr, userId);
-        const sectionNrFromDB = await getSectionNr(courseNr); // Fetch lesson number
-        console.log("lessonNrFromDB", lessonNrFromDB); // Log lessonNrFromDB to verify
+        const { lessonNr, sectionNr } = await getProgress(courseNr, userId);
 
-        let sectionNr = 0;
+        let computedSectionNr =
+          currentLessonIndex < lessonNr ? 1000 : sectionNr;
 
-        if (currentLessonIndex < lessonNrFromDB) {
-          sectionNr = 1000;
-        } else {
-          sectionNr = sectionNrFromDB; // Adjust as necessary
+        if (isMounted) {
+          setCurrentSectionIndex(computedSectionNr);
+          setCompletedSections(sections.slice(0, computedSectionNr));
         }
-
-        console.log("sectionNr (before state update):", sectionNr); // Log before updating state
-
-        setCurrentSectionIndex(sectionNr); // Set progress
-        setCompletedSections(sections.slice(0, sectionNr)); // Mark sections as completed
       } catch (error) {
         console.error(`Error fetching progress for course ${courseNr}:`, error);
       }
     };
 
     fetchProgress();
-  }, [courseNr, sections]); // Trigger when courseNr, sections, or userId changes
+
+    return () => {
+      isMounted = false;
+    };
+  }, [courseNr, currentLessonIndex, sections]);
 
   useEffect(() => {
     // Log currentSectionIndex after it updates

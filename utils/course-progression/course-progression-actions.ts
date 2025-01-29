@@ -187,46 +187,20 @@ export async function resetSectionNr(courseNr: number) {
   }
 }
 
-export async function getLessonNr(courseNr: number, userId: string) {
-  console.log("IS IT DIS????");
+export async function getProgress(courseNr: number, userId: string) {
   try {
     const progress = await prisma.progress.findUnique({
       where: { userId_courseNr: { userId, courseNr } },
-      select: { lessonNr: true },
+      select: { lessonNr: true, sectionNr: true }, // Fetch both fields at once
     });
-    return progress?.lessonNr || 0;
+
+    return {
+      lessonNr: progress?.lessonNr || 0,
+      sectionNr: progress?.sectionNr || 0,
+    };
   } catch (error) {
-    console.error(
-      `Error retrieving lesson number for course ${courseNr}:`,
-      error
-    );
+    console.error(`Error retrieving progress for course ${courseNr}:`, error);
     throw error;
-  }
-}
-
-export async function getSectionNr(courseNr: number) {
-  const userId = await getUserId(); // Obtain the user ID dynamically
-  try {
-    const progress = await prisma.progress.findUnique({
-      where: {
-        userId_courseNr: {
-          userId: userId,
-          courseNr: courseNr,
-        },
-      },
-      select: {
-        sectionNr: true, // Retrieve only the sectionNr field
-      },
-    });
-
-    // Return sectionNr or default to 0 if no progress exists
-    return progress?.sectionNr || 0;
-  } catch (error) {
-    console.error(
-      `Error retrieving section number for course ${courseNr} and user ${userId}:`,
-      error
-    );
-    throw error; // Re-throw the error to let the caller handle it
   }
 }
 
