@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { LessonProps, Section } from "./LessonLayout";
 import LessonContent from "./LessonLayout";
 import LessonLoaderVisual from "./LessonLoaderVisual";
 import {
   updateLessonNr,
   updateSectionNr,
-  getSectionNr,
   getLessonNr,
   resetSectionNr,
+  getSectionNr,
 } from "@/utils/course-progression/course-progression-actions";
+import { getUserId } from "@/utils/user-actions/get-user";
 
 export default function LessonEngine({
   sections,
@@ -34,18 +35,22 @@ export default function LessonEngine({
 
   useEffect(() => {
     const fetchProgress = async () => {
+      const userId = await getUserId();
+
       try {
-        const lessonNrFromDB = await getLessonNr(courseNr); // Fetch lessonNr from DB
+        const lessonNrFromDB = await getLessonNr(courseNr, userId);
+        const sectionNrFromDB = await getSectionNr(courseNr); // Fetch lesson number
+        console.log("lessonNrFromDB", lessonNrFromDB); // Log lessonNrFromDB to verify
+
         let sectionNr = 0;
 
         if (currentLessonIndex < lessonNrFromDB) {
           sectionNr = 1000;
         } else {
-          sectionNr = await getSectionNr(courseNr); // Fetch sectionNr from DB
+          sectionNr = sectionNrFromDB; // Adjust as necessary
         }
 
-        console.log("Lesson from DB:", lessonNrFromDB);
-        console.log("Section from DB:", sectionNr);
+        console.log("sectionNr (before state update):", sectionNr); // Log before updating state
 
         setCurrentSectionIndex(sectionNr); // Set progress
         setCompletedSections(sections.slice(0, sectionNr)); // Mark sections as completed
@@ -55,7 +60,15 @@ export default function LessonEngine({
     };
 
     fetchProgress();
-  }, [courseNr, sections]);
+  }, [courseNr, sections]); // Trigger when courseNr, sections, or userId changes
+
+  useEffect(() => {
+    // Log currentSectionIndex after it updates
+    console.log(
+      "Updated sectionNr (currentSectionIndex):",
+      currentSectionIndex
+    );
+  }, [currentSectionIndex]); // This will log when currentSectionIndex is updated
 
   const handleNext = () => {
     const section = sections[currentSectionIndex];

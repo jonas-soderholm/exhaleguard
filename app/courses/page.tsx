@@ -1,20 +1,10 @@
 import CourseCard from "@/components/courses/CourseCard";
 import { allCourses } from "@/data/courses/all-courses";
 import { getCourseWithProgress } from "@/utils/course-progression/course-progression-actions";
-import { getUserId } from "@/utils/user-actions/get-user";
-import { isSubscribedNew } from "@/utils/user-actions/subscription";
+import { getIdAndSub } from "@/utils/redirect-user";
 
 export default async function AllCourses() {
-  let userId: string | null = null;
-  let subscribed = false;
-
-  try {
-    userId = await getUserId();
-    subscribed = await isSubscribedNew(userId);
-  } catch (error) {
-    console.error("An error occurred:", error);
-    userId = null;
-  }
+  let { userId, subscribed } = await getIdAndSub();
 
   // Fetch course and progress data for all courses
   const courseProgressPromises = allCourses.map(async (course) => {

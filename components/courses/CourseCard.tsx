@@ -25,7 +25,7 @@ export default function CourseCard({
 }: CourseCardProps) {
   const handleCourseClick = async () => {
     try {
-      // ✅ Check if user is logged in first
+      // Check if user is logged in first
       let userId;
       try {
         userId = await getUserId(); // If not authenticated, this will throw
@@ -35,7 +35,7 @@ export default function CourseCard({
         return;
       }
 
-      // ✅ Now check subscription status
+      // Now check subscription status
       const subscribed = await isSubscribedNew(userId);
 
       if (!subscribed) {
@@ -43,7 +43,7 @@ export default function CourseCard({
         return;
       }
 
-      // ✅ Navigate to the course page (let it handle progress)
+      // Navigate to the course page (let it handle progress)
       window.location.href = linkUrl;
     } catch (error) {
       console.error("Error handling course click:", error);

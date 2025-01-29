@@ -1,5 +1,6 @@
 import LessonClient from "@/components/lessons/LessonClient";
-import { redirectIfNotSubscribed } from "@/utils/user-actions/subscription";
+import { getIdAndSub } from "@/utils/redirect-user";
+import { redirect } from "next/navigation";
 
 export default async function LessonPage({
   params,
@@ -8,9 +9,12 @@ export default async function LessonPage({
 }) {
   // Await params to extract course and lesson
   const { course, lesson } = await params;
+  let { userId, subscribed } = await getIdAndSub();
 
   // Perform subscription check
-  await redirectIfNotSubscribed();
+  if (!subscribed || !userId) {
+    redirect("/sign-in");
+  }
 
   // Return the client component
   return <LessonClient courseSlug={course} lesson={lesson} />;
