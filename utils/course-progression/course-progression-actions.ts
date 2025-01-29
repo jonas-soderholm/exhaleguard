@@ -90,39 +90,6 @@ export async function ensureAndGetCourseProgress(courseNr: number) {
   }
 }
 
-export async function updateLessonNr(courseNr: number) {
-  const userId = await getUserId();
-  try {
-    await prisma.$transaction(async (tx) => {
-      // Increment the lesson number in the Progress table for the given user and course
-      await tx.progress.update({
-        where: {
-          userId_courseNr: {
-            userId: userId,
-            courseNr: courseNr,
-          },
-        },
-        data: {
-          lessonNr: {
-            increment: 1, // Increment the current value of lessonNr by 1
-          },
-        },
-      });
-    });
-
-    console.log(
-      `Lesson number incremented for course ${courseNr} and user ${userId}.`
-    );
-  } catch (error) {
-    console.error(
-      `Error incrementing lesson number for course ${courseNr} and user ${userId}:`,
-      error
-    );
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
 export async function updateSectionNr(courseNr: number) {
   const userId = await getUserId(); // Obtain the user ID dynamically
   try {
@@ -156,8 +123,39 @@ export async function updateSectionNr(courseNr: number) {
   }
 }
 
-export async function resetSectionNr(courseNr: number) {
-  const userId = await getUserId(); // Obtain the user ID dynamically
+export async function updateLessonNr(courseNr: number, userId: string) {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Increment the lesson number in the Progress table for the given user and course
+      await tx.progress.update({
+        where: {
+          userId_courseNr: {
+            userId: userId,
+            courseNr: courseNr,
+          },
+        },
+        data: {
+          lessonNr: {
+            increment: 1, // Increment the current value of lessonNr by 1
+          },
+        },
+      });
+    });
+
+    console.log(
+      `Lesson number incremented for course ${courseNr} and user ${userId}.`
+    );
+  } catch (error) {
+    console.error(
+      `Error incrementing lesson number for course ${courseNr} and user ${userId}:`,
+      error
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function resetSectionNr(courseNr: number, userId: string) {
   try {
     await prisma.$transaction(async (tx) => {
       // Reset the section number in the Progress table for the given user and course
