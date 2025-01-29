@@ -12,11 +12,8 @@ export async function getUserId() {
     data: { user: sessionUser },
   } = await supabase.auth.getUser();
 
-  if (!sessionUser) {
-    throw new Error("User not authenticated");
-  }
-
-  return sessionUser.id;
+  // ✅ Instead of throwing an error, return `null`
+  return sessionUser ? sessionUser.id : null;
 }
 
 export async function getUserEmail() {
