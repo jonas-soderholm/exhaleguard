@@ -228,12 +228,7 @@ import prisma from "../prisma";
 import { getUserId } from "../user-actions/get-user";
 
 // Fetch both Course and Progress in a single query
-export async function getCourseWithProgress(courseNr: number) {
-  const userId = await getUserId();
-  console.log(
-    `[DEBUG] Fetching course ${courseNr} and progress for user ${userId}`
-  );
-
+export async function getCourseWithProgress(courseNr: number, userId?: string) {
   const courseData = await prisma.course.findUnique({
     where: { id: courseNr },
     include: {
