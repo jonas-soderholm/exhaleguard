@@ -5,43 +5,35 @@ import { getUserId } from "../user-actions/get-user";
 
 export async function createCourseAndProgress(courseNr: number) {
   try {
-    const userId = await getUserId();
+    const userId = await getUserId(); // ✅ Runs only once per function call
+
     await prisma.$transaction(async (tx) => {
-      // Create or ensure the course exists
       await tx.course.upsert({
         where: { id: courseNr },
-        update: {}, // No updates for existing courses
+        update: {},
         create: {
           id: courseNr,
           name: `Course ${courseNr}`,
         },
       });
-      // Create or ensure progress exists for the user and course
+
       await tx.progress.upsert({
-        where: {
-          userId_courseNr: {
-            userId: userId,
-            courseNr: courseNr,
-          },
-        },
-        update: {}, // No updates for existing progress
+        where: { userId_courseNr: { userId, courseNr } },
+        update: {},
         create: {
-          userId: userId,
-          courseNr: courseNr,
+          userId,
+          courseNr,
           lessonNr: 0,
           sectionNr: 0,
           completed: false,
         },
       });
     });
-    // console.log(`Course ${courseNr} and progress for user ${userId} ensured.`);
   } catch (error) {
     console.error(
-      `Error creating or ensuring course ${courseNr} and progress for user:`,
+      `Error ensuring course ${courseNr} and progress for user:`,
       error
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
