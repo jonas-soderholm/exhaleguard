@@ -48,6 +48,33 @@ export async function isSubscribed(): Promise<boolean> {
   }
 }
 
+const cache = new Map<string, boolean>();
+
+export async function isSubscribedNew(userId: string): Promise<boolean> {
+  if (cache.has(userId)) return cache.get(userId)!;
+
+  try {
+    const subscription = await prisma.subscription.findFirst({
+      where: { userId },
+      select: { startDate: true, endDate: true },
+    });
+
+    if (!subscription) return false;
+
+    const now = new Date();
+    const isActive =
+      now >= subscription.startDate && now <= subscription.endDate;
+
+    cache.set(userId, isActive);
+    setTimeout(() => cache.delete(userId), 60000);
+
+    return isActive;
+  } catch (error) {
+    console.error("Error checking subscription status:", error);
+    return false;
+  }
+}
+
 export async function getSubscriptionDaysLeft(): Promise<number | null> {
   try {
     const userId = await getUserId();
