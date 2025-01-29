@@ -1,8 +1,7 @@
 "use client";
 
-import { ensureAndGetCourseProgress } from "@/utils/course-progression/course-progression-actions";
-import { isSubscribed } from "@/utils/user-actions/subscription";
-
+import { isSubscribedNew } from "@/utils/user-actions/subscription";
+import { getUserId } from "@/utils/user-actions/get-user";
 import ProgressBar from "./ProgressBar";
 
 type CourseCardProps = {
@@ -18,7 +17,6 @@ type CourseCardProps = {
 
 export default function CourseCard({
   title,
-  courseNr,
   description,
   buttonText,
   image,
@@ -27,17 +25,28 @@ export default function CourseCard({
 }: CourseCardProps) {
   const handleCourseClick = async () => {
     try {
-      // Ensure course and progress creation
-      const subscribed = await isSubscribed();
-
-      if (subscribed) {
-        await ensureAndGetCourseProgress(courseNr);
+      // ✅ Check if user is logged in first
+      let userId;
+      try {
+        userId = await getUserId(); // If not authenticated, this will throw
+      } catch (error) {
+        console.error("User not authenticated:", error);
+        window.location.href = "/sign-up"; // Redirect to sign-up page
+        return;
       }
 
-      // Redirect to the course URL
+      // ✅ Now check subscription status
+      const subscribed = await isSubscribedNew(userId);
+
+      if (!subscribed) {
+        window.location.href = "/account?tab=1"; // Redirect to subscription page
+        return;
+      }
+
+      // ✅ Navigate to the course page (let it handle progress)
       window.location.href = linkUrl;
     } catch (error) {
-      console.error("Error creating course and progress:", error);
+      console.error("Error handling course click:", error);
     }
   };
 

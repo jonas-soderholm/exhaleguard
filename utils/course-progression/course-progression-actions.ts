@@ -260,53 +260,33 @@ export async function courseCompleted(courseNr: number, userId: string) {
   }
 }
 
-export async function ensureAndGetAllProgress(courseNumbers: number[]) {
+export async function ensureAndGetAllProgress(courseNr: number) {
   const userId = await getUserId();
 
   return prisma.$transaction(async (tx) => {
-    // ✅ Insert all courses without checking first
-    await tx.course.createMany({
-      data: courseNumbers.map((courseNr) => ({
-        id: courseNr,
-        name: `Course ${courseNr}`,
-      })),
-      skipDuplicates: true,
+    // ✅ First, fetch existing progress
+    const existingProgress = await tx.progress.findUnique({
+      where: { userId_courseNr: { userId, courseNr } },
+      select: { lessonNr: true, sectionNr: true, completed: true },
     });
 
-    // ✅ Check which progress already exists
-    const existingProgress = new Map(
-      (
-        await tx.progress.findMany({
-          where: { userId, courseNr: { in: courseNumbers } },
-          select: {
-            courseNr: true,
-            lessonNr: true,
-            sectionNr: true,
-            completed: true,
-          },
-        })
-      ).map((p) => [p.courseNr, p])
-    );
+    if (existingProgress) return existingProgress; // ✅ Avoid unnecessary inserts
 
-    // ✅ Insert missing progress only
-    const missingProgress = courseNumbers
-      .filter((courseNr) => !existingProgress.has(courseNr))
-      .map((courseNr) => ({
+    // ✅ If progress doesn't exist, ensure course & progress are inserted **once**
+    await tx.course.upsert({
+      where: { id: courseNr },
+      update: {},
+      create: { id: courseNr, name: `Course ${courseNr}` },
+    });
+
+    return await tx.progress.create({
+      data: {
         userId,
         courseNr,
         lessonNr: 0,
         sectionNr: 0,
         completed: false,
-      }));
-
-    if (missingProgress.length) {
-      await tx.progress.createMany({
-        data: missingProgress,
-        skipDuplicates: true,
-      });
-      missingProgress.forEach((p) => existingProgress.set(p.courseNr, p)); // Merge new progress
-    }
-
-    return existingProgress;
+      },
+    });
   });
 }

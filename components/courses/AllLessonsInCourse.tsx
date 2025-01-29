@@ -52,26 +52,6 @@ export default function AllLessonsInCourse({
     Array.isArray(lessonsData) ? lessonsData : [],
     lessonNr
   );
-  const initialRender = useRef(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      localStorage.setItem("scrollPosition", window.scrollY.toString());
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    const savedPosition = localStorage.getItem("scrollPosition");
-    if (savedPosition) {
-      window.scrollTo(0, parseInt(savedPosition, 10));
-    }
-  }, []);
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
