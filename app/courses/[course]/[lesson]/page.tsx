@@ -9,7 +9,7 @@ export default async function LessonPage({
 }) {
   // Await params to extract course and lesson
   const { course, lesson } = await params;
-  let { userId, subscribed } = await getIdAndSub();
+  const { userId, subscribed } = await getIdAndSub();
 
   // Perform subscription check
   if (!subscribed || !userId) {
