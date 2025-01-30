@@ -111,12 +111,11 @@ const LessonContent: React.FC<LessonContentProps> = ({
             .slice(0, currentContentIndex + 1)
             .map((text, index) => (
               <div key={index} className="mb-4">
-                {sections[currentSectionIndex].images &&
-                  sections[currentSectionIndex].images[index] && (
+                {sections[currentSectionIndex]?.images &&
+                  sections[currentSectionIndex]?.images[index] && (
                     <img
-                      src={sections[currentSectionIndex].images[index]}
+                      src={sections[currentSectionIndex]?.images[index]}
                       alt={`Image for ${text}`}
-                      className="mt-2 rounded-lg max-w-full mx-auto"
                     />
                   )}
                 <p className="animate-fade-in">{text}</p>
