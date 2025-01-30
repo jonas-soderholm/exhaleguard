@@ -63,8 +63,6 @@ export default function LessonEngine({
 
   const hasFetched = useRef(false); // Track if data has already been fetched
   useEffect(() => {
-    let isMounted = true; // Prevents state updates if the component unmounts
-
     if (hasFetched.current) return; // Stop duplicate fetches
     hasFetched.current = true;
 
@@ -94,10 +92,6 @@ export default function LessonEngine({
     };
 
     fetchProgress();
-
-    return () => {
-      isMounted = false;
-    };
   }, [courseNr, currentLessonIndex, sections]);
 
   useEffect(() => {
