@@ -23,15 +23,42 @@ export default function CourseCard({
   linkUrl,
   progress,
 }: CourseCardProps) {
+  // const handleCourseClick = async () => {
+  //   try {
+  //     // Check if user is logged in first
+  //     let userId;
+  //     try {
+  //       userId = await getUserId(); // If not authenticated, this will throw
+  //     } catch (error) {
+  //       console.error("User not authenticated:", error);
+  //       window.location.href = "/sign-up"; // Redirect to sign-up page
+  //       return;
+  //     }
+
+  //     // Now check subscription status
+  //     const subscribed = await isSubscribedNew(userId);
+
+  //     if (!subscribed) {
+  //       window.location.href = "/account?tab=1"; // Redirect to subscription page
+  //       return;
+  //     }
+
+  //     // Navigate to the course page (let it handle progress)
+  //     window.location.href = linkUrl;
+  //   } catch (error) {
+  //     console.error("Error handling course click:", error);
+  //   }
+  // };
+
   const handleCourseClick = async () => {
     try {
       // Check if user is logged in first
-      let userId;
-      try {
-        userId = await getUserId(); // If not authenticated, this will throw
-      } catch (error) {
-        console.error("User not authenticated:", error);
-        window.location.href = "/sign-up"; // Redirect to sign-up page
+      const userId = await getUserId(); // If not authenticated, this will throw
+
+      // If getUserId() fails, catch the error and redirect
+      if (!userId) {
+        console.error("User not authenticated");
+        window.location.href = "/sign-up";
         return;
       }
 
