@@ -28,8 +28,6 @@ export default function LessonEngine({
   const [feedback, setFeedback] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
 
-  let userId = "";
-
   const scrollDown = (amount: number) => {
     window.scrollBy({ top: amount, behavior: "smooth" });
   };
@@ -71,7 +69,7 @@ export default function LessonEngine({
     hasFetched.current = true;
 
     const fetchProgress = async () => {
-      userId = await getUserId();
+      const userId = await getUserId();
       if (!userId) return;
 
       try {
@@ -128,7 +126,7 @@ export default function LessonEngine({
     const isAnswerCorrect = currentSection.answerKeywords.some((keyword) =>
       userInputNormalized.includes(keyword.trim().toLowerCase())
     );
-    userId = await getUserId();
+    const userId = await getUserId();
 
     if (isAnswerCorrect) {
       setFeedback("Correct!");

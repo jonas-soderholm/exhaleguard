@@ -1,7 +1,6 @@
 "use client";
 
 import { LessonButton } from "@/components/courses/LessonButton";
-import { useEffect, useRef } from "react";
 
 interface Lesson {
   name: string;

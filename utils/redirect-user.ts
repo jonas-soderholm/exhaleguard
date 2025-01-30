@@ -1,3 +1,5 @@
+"use server";
+
 import { getUserId } from "@/utils/user-actions/get-user";
 import { isSubscribedNew } from "@/utils/user-actions/subscription";
 

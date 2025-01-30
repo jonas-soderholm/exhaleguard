@@ -4,7 +4,7 @@ import { getCourseWithProgress } from "@/utils/course-progression/course-progres
 import { getIdAndSub } from "@/utils/redirect-user";
 
 export default async function AllCourses() {
-  let { userId, subscribed } = await getIdAndSub();
+  const { userId, subscribed } = await getIdAndSub();
 
   // Fetch course and progress data for all courses
   const courseProgressPromises = allCourses.map(async (course) => {
