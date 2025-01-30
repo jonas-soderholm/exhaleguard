@@ -6,12 +6,11 @@ import { getUserId } from "@/utils/user-actions/get-user";
 import { isSubscribedNew } from "@/utils/user-actions/subscription";
 
 export default async function CoursePage({
-  params: rawParams,
+  params,
 }: {
-  params: { course: string };
+  params: Promise<{ course: string }>;
 }) {
-  const params = await Promise.resolve(rawParams);
-  const { course } = params;
+  const { course } = await params;
 
   const courseEntry = Object.values(CourseInfo).find(
     (entry) => entry.path.split("/").pop() === course
