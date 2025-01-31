@@ -1,8 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
-import DeleteUserButton from "./delete-user/ButtonDeleteUser";
-import { deleteUser } from "./delete-user/DeleteUser";
-
 type UserOverviewProps = {
   email: string | null;
   subscribed: boolean;
@@ -37,8 +32,6 @@ export default function UserOverview({
           </p>
         </div>
       </div>
-      {/* DELETE USER BUTTON */}
-      <DeleteUserButton />
     </>
   );
 }

@@ -32,7 +32,7 @@ export default function AccountTabsLayout({
   return (
     <div className="flex flex-col items-center justify-center p-4">
       {/* Tabs */}
-      <div className="flex flex-wrap justify-center gap-4 w-full max-w-lg">
+      <div className="flex flex-wrap justify-center gap-2 w-full max-w-lg">
         {menuItems.map((item, index) => (
           <button
             key={index}

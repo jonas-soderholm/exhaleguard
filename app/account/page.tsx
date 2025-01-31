@@ -5,6 +5,7 @@ import UserOverview from "@/components/account/UserOverview";
 import IndividualPlan from "@/components/account/IndividualPlan";
 import Team from "@/components/account/Team";
 import Invoices from "@/components/account/Invoices";
+import Settings from "@/components/account/Settings";
 
 export default async function AccountLayout() {
   const accountData = await getFullUser();
@@ -43,6 +44,10 @@ export default async function AccountLayout() {
     {
       name: "Invoices",
       content: <Invoices />,
+    },
+    {
+      name: "Settings",
+      content: <Settings />,
     },
   ];
 
