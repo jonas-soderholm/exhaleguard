@@ -18,13 +18,28 @@ export const signUpAction = async (formData: FormData) => {
     return { error: "Email and password are required" };
   }
 
-  const { error } = await supabase.auth.signUp({
+  // 🔥 Attempt sign-up
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
     },
   });
+
+  console.log("Sign-up response:", data);
+
+  // 🚨 Check if the email already exists
+  if (
+    data.user &&
+    (!data.user.identities || data.user.identities.length === 0)
+  ) {
+    return encodedRedirect(
+      "error",
+      "/sign-up",
+      "Email address is already taken."
+    );
+  }
 
   if (error) {
     console.error(error.code + " " + error.message);

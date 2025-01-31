@@ -17,7 +17,7 @@ export function SubmitButton({
 
   return (
     <Button
-      className="w-full mx-auto btn-custom-primary-border hover:bg-blue-600"
+      className="w-full mx-auto btn-custom-primary-border hover:bg-blue-600 !rounded-lg"
       type="submit"
       aria-disabled={pending}
       {...props}
