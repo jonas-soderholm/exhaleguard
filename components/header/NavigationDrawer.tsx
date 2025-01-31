@@ -29,7 +29,7 @@ export default function NavigationDrawer({ user }: { user: User | null }) {
   }, [user]);
 
   return (
-    <div className="flex mx-2 text-slate-200">
+    <div className="flex mr-2 text-slate-200">
       <div className="drawer drawer-end">
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">

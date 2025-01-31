@@ -40,10 +40,22 @@ export default async function Header() {
             </div>
 
             {/* Auth Links */}
-            <div
-              className={`hidden md:flex items-center ${!user ? "ml-2" : ""}`}
-            >
-              {user ? null : (
+            <div className={`md:flex items-center ${!user ? "ml-2" : ""}`}>
+              {user ? (
+                <>
+                  {user.user_metadata.avatar_url && (
+                    <div className="ml-4">
+                      <Link href="/account?tab=1">
+                        <img
+                          src={user.user_metadata.avatar_url}
+                          alt="User Avatar"
+                          className="w-8 h-8 rounded-full border border-gray-600"
+                        />
+                      </Link>
+                    </div>
+                  )}
+                </>
+              ) : (
                 <>
                   <div className="text-slate-200 pointer-events-none">|</div>
                   <div className="hover:underline text-slate-200 ml-2">
