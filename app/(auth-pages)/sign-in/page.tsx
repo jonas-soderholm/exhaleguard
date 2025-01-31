@@ -6,9 +6,19 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { LogoName } from "@/constants/logo-name";
 import OAuthButtons from "@/components/auth/OAuthButtons";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    redirect("/");
+  }
 
   return (
     <>
