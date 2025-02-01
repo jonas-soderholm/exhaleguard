@@ -20,7 +20,7 @@ export default async function Header() {
             <div className="flex items-center font-semibold">
               <img
                 src={LogoName.Logo}
-                alt="Xhale Logo"
+                alt="Logo"
                 className="w-6 md:w-10 mx-3"
               />
               <span className="text-[20px] md:text-2xl font-bold text-slate-200 ml-[-5px]">
@@ -40,7 +40,7 @@ export default async function Header() {
             </div>
 
             {/* Auth Links */}
-            <div className={`md:flex items-center ${!user ? "ml-2" : ""}`}>
+            <div className={`flex items-center ${!user ? "ml-2" : ""}`}>
               {user ? (
                 <>
                   {user.user_metadata.avatar_url && (

@@ -64,7 +64,7 @@ export default function IndividualPlan({
             <h2 className="text-lg font-semibold text-red-600">(Inactive)</h2>
           </div>
           <p className="text-base">
-            Unlock all courses with an Individual Plan. One time payment, no
+            Unlock all courses with an Individual Plan. One-time payment, no
             automatic renewals. Access for 1 month.
           </p>
           <div className="border-t border-gray-400 mt-4 pt-4">
@@ -82,7 +82,7 @@ export default function IndividualPlan({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="border border-gray-400 p-4 rounded-md shadow-sm">
-                <h4 className="font-semibold text-lg mb-2">One time Payment</h4>
+                <h4 className="font-semibold text-lg mb-2">One-time Payment</h4>
                 <p className="text-base">Individual Plan</p>
                 <p className="text-xl font-semibold mt-2">
                   ${Prices.Individual}.00
@@ -96,7 +96,7 @@ export default function IndividualPlan({
 
             <div className="flex items-center justify-between border-t border-gray-400 pt-4">
               <div>
-                <p className="text-sm text-gray-500">One time payment</p>
+                <p className="text-sm text-gray-500">One-time payment</p>
                 <p className="text-xl font-semibold">
                   ${Prices.Individual}.00 USD
                 </p>

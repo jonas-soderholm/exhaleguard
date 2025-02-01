@@ -205,7 +205,9 @@ export default function Team() {
       <div>
         <div className="flex items-center justify-between border-t border-gray-400 pt-4">
           <div>
-            <p className="text-sm text-gray-500">One time payment</p>
+            <p className="text-sm text-gray-500">
+              One-time payment, no auto-renewal.
+            </p>
             <p className="text-xl font-semibold">${totalAmountToPay}.00 USD</p>
           </div>
           <div>
