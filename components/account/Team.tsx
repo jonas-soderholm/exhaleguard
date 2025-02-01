@@ -2,6 +2,7 @@
 import { createCheckoutSession } from "@/utils/stripe/stripe-actions";
 import { LogoName } from "@/constants/logo-name";
 import { useState, useEffect } from "react";
+import { Prices } from "@/constants/prices";
 
 export const handleCheckoutTeam = async () => {
   try {
@@ -19,20 +20,21 @@ export const handleCheckoutTeam = async () => {
 };
 
 export default function Team() {
-  const [emails, setEmails] = useState<string[]>([]);
-  const [email, setEmail] = useState<string>(""); // Separate state for input field
+  const [teamEmails, setTeamEmails] = useState<string[]>([]);
+  const [currentEmailInput, setCurrentEmailInput] = useState<string>(""); // Separate state for input field
   const [alert, setAlert] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [tooManyMembers, setTooManyMembers] = useState<string | null>(null);
   const [checkoutDisabled, setCheckoutDisabled] = useState<boolean>(true);
-  const maxEmails = 2;
+  const maxEmails = 3;
   const minimumEmails = 2;
   const alertTimeoutShort = 2500;
   const alertTimeoutLong = 7000;
+  let totalAmountToPay = Prices.Team * teamEmails.length;
 
   useEffect(() => {
-    setCheckoutDisabled(emails.length < minimumEmails);
-  }, [emails]);
+    setCheckoutDisabled(teamEmails.length < minimumEmails);
+  }, [teamEmails]);
 
   useEffect(() => {
     if (success) {
@@ -62,7 +64,7 @@ export default function Team() {
   }, [tooManyMembers]);
 
   const addEmail = (email: string) => {
-    if (emails.length >= maxEmails) {
+    if (teamEmails.length >= maxEmails) {
       setTooManyMembers(
         `⚠️ You can add up to ${maxEmails} seats per team invitation. To invite more than ${maxEmails} people, please make an additional purchase.`
       );
@@ -85,14 +87,14 @@ export default function Team() {
       return;
     }
 
-    if (emails.includes(email)) {
+    if (teamEmails.includes(email)) {
       setAlert("⚠️ This email has already been added.");
       setSuccess(null);
       return;
     }
 
-    setEmails([...emails, email]);
-    setEmail(""); // Clear input after adding
+    setTeamEmails([...teamEmails, email]);
+    setCurrentEmailInput(""); // Clear input after adding
     setAlert(null);
     setSuccess("✅ Email added successfully!"); // Success feedback
 
@@ -103,16 +105,16 @@ export default function Team() {
   };
 
   const removeEmail = (index: number) => {
-    setEmails(emails.filter((_, i) => i !== index));
+    setTeamEmails(teamEmails.filter((_, i) => i !== index));
     setAlert("");
     setAlert("User removed successfully.");
-    if (emails.length < maxEmails) {
+    if (teamEmails.length < maxEmails) {
       setCheckoutDisabled(true);
     }
   };
 
   const handleAddEmail = () => {
-    addEmail(email);
+    addEmail(currentEmailInput);
   };
 
   return (
@@ -127,7 +129,9 @@ export default function Team() {
         >
           <path d="M320-160q-33 0-56.5-23.5T240-240v-120h120v-90q-35-2-66.5-15.5T236-506v-44h-46L60-680q36-46 89-65t107-19q27 0 52.5 4t51.5 15v-55h480v520q0 50-35 85t-85 35H320Zm120-200h240v80q0 17 11.5 28.5T720-240q17 0 28.5-11.5T760-280v-440H440v24l240 240v56h-56L510-514l-8 8q-14 14-29.5 25T440-464v104ZM224-630h92v86q12 8 25 11t27 3q23 0 41.5-7t36.5-25l8-8-56-56q-29-29-65-43.5T256-684q-20 0-38 3t-36 9l42 42Zm376 350H320v40h286q-3-9-4.5-19t-1.5-21Zm-280 40v-40 40Z" />
         </svg>
-        <span className="text-xl font-bold">Invite Team Members</span>
+        <span className="text-xl font-bold">
+          Invite Team Members ({Prices.Team}$ / Seat)
+        </span>
       </div>
       <p className="text-xs text-gray-500 ">
         If the added emails are not currently registered on {LogoName.AppName},
@@ -144,8 +148,8 @@ export default function Team() {
           <div className="w-full">
             <input
               type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={currentEmailInput}
+              onChange={(e) => setCurrentEmailInput(e.target.value)}
               className="input text-slate-200 input-bordered w-full text-center"
               placeholder="Enter email"
             />
@@ -178,8 +182,8 @@ export default function Team() {
             </tr>
           </thead>
           <tbody>
-            {emails.length > 0 ? (
-              emails.map((email, index) => (
+            {teamEmails.length > 0 ? (
+              teamEmails.map((email, index) => (
                 <tr key={index} className="animate-fade-in">
                   <th>{index + 1}</th>
                   <td>{email}</td>
@@ -203,25 +207,44 @@ export default function Team() {
           </tbody>
         </table>
       </div>
-
-      <div className="flex justify-center mt-8">
-        <button
-          // onClick={() => handleCheckout()}
-          disabled={checkoutDisabled}
-          data-tip={
-            checkoutDisabled
-              ? `Please add at least ${minimumEmails} seats to proceed.`
-              : null
-          }
-          className={
-            "tooltip tooltip-bottom text-white py-3 px-6 rounded-md text-lg font-semibold transition-all" +
-            (checkoutDisabled
-              ? "hover:bg-gray-400 bg-gray-400 cursor-not-allowed"
-              : "hover:bg-blue-700 bg-blue-600")
-          }
-        >
-          Secure Checkout
-        </button>
+      <div>
+        <div className="flex items-center justify-between border-t border-gray-400 pt-4">
+          <div>
+            <p className="text-sm text-gray-500">One time payment</p>
+            <p className="text-xl font-semibold">${totalAmountToPay}.00 USD</p>
+          </div>
+          <div>
+            <div className="mt-2">
+              <button
+                // onClick={() => handleCheckout()}
+                disabled={checkoutDisabled}
+                data-tip={
+                  checkoutDisabled
+                    ? `Please add at least ${minimumEmails} seats to proceed.`
+                    : null
+                }
+                className={
+                  "tooltip tooltip-bottom text-white py-3 px-6 rounded-md text-lg font-semibold transition-all" +
+                  (checkoutDisabled
+                    ? "hover:bg-gray-400 bg-gray-400 cursor-not-allowed"
+                    : "hover:bg-blue-700 bg-blue-600")
+                }
+              >
+                Secure Checkout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-center mt-6">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <p>Powered by </p>
+          <img
+            src="/images/stripe/stripe-logo.png"
+            alt="Powered by Stripe"
+            className="w-16"
+          />
+        </div>
       </div>
     </>
   );
