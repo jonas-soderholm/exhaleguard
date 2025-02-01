@@ -23,19 +23,50 @@ export default function Team() {
   const [email, setEmail] = useState<string>(""); // Separate state for input field
   const [alert, setAlert] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [tooManyMembers, setTooManyMembers] = useState<string | null>(null);
   const [checkoutDisabled, setCheckoutDisabled] = useState<boolean>(true);
   const maxEmails = 2;
   const minimumEmails = 2;
+  const alertTimeoutShort = 2500;
+  const alertTimeoutLong = 7000;
 
   useEffect(() => {
     setCheckoutDisabled(emails.length < minimumEmails);
   }, [emails]);
 
+  useEffect(() => {
+    if (success) {
+      setAlert(null);
+      setTooManyMembers(null);
+      const timer = setTimeout(() => setSuccess(null), alertTimeoutShort);
+      return () => clearTimeout(timer); // Cleanup to prevent memory leaks
+    }
+  }, [success]);
+
+  useEffect(() => {
+    if (alert) {
+      setSuccess(null);
+      setTooManyMembers(null);
+      const timer = setTimeout(() => setAlert(null), alertTimeoutShort);
+      return () => clearTimeout(timer); // Cleanup function
+    }
+  }, [alert]);
+
+  useEffect(() => {
+    if (tooManyMembers) {
+      setSuccess(null);
+      setAlert(null);
+      const timer = setTimeout(() => setTooManyMembers(null), alertTimeoutLong);
+      return () => clearTimeout(timer); // Cleanup function
+    }
+  }, [tooManyMembers]);
+
   const addEmail = (email: string) => {
     if (emails.length >= maxEmails) {
-      setAlert(
-        `⚠️ You can add up to ${maxEmails} emails per invitation. To invite more than ${maxEmails} people, please make an additional purchase.`
+      setTooManyMembers(
+        `⚠️ You can add up to ${maxEmails} seats per team invitation. To invite more than ${maxEmails} people, please make an additional purchase.`
       );
+      setAlert(null);
       setSuccess(null);
       return;
     }
@@ -65,12 +96,10 @@ export default function Team() {
     setAlert(null);
     setSuccess("✅ Email added successfully!"); // Success feedback
 
-    if (emails.length >= maxEmails) {
-      setCheckoutDisabled(true);
-      return;
-    }
-
-    setTimeout(() => setSuccess(null), 3000); // Hide success message after 3s
+    // if (emails.length >= maxEmails) {
+    //   setCheckoutDisabled(true);
+    //   return;
+    // }
   };
 
   const removeEmail = (index: number) => {
@@ -133,6 +162,9 @@ export default function Team() {
         <div className="h-2 mb-2">
           {alert && <p className="text-red-500 text-xs">{alert}</p>}
           {success && <p className="text-green-500 text-xs">{success}</p>}
+          {tooManyMembers && (
+            <p className="text-red-500 text-xs">{tooManyMembers}</p>
+          )}
         </div>
       </div>
 
@@ -178,7 +210,7 @@ export default function Team() {
           disabled={checkoutDisabled}
           data-tip={
             checkoutDisabled
-              ? `Please add at least ${minimumEmails} email(s) to proceed.`
+              ? `Please add at least ${minimumEmails} seats to proceed.`
               : null
           }
           className={
