@@ -40,12 +40,9 @@ export default async function ForgotPassword(props: {
       </div>
       {/* Back to Sign In */}
       <div className="flex justify-center items-center mt-4 bg-base-300 px-6 py-6 rounded-lg border-slate-700 border-2 w-full md:max-w-sm max-w-xs mx-auto">
-        <p className="text-sm text-foreground text-slate-200 text-center">
+        <p className="text-sm text-slate-200 text-center">
           Back to{" "}
-          <Link
-            className="text-foreground font-medium text-blue-400"
-            href="/sign-in"
-          >
+          <Link className="font-medium underline text-blue-400" href="/sign-in">
             Sign in
           </Link>
         </p>

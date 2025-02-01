@@ -59,7 +59,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
                 Password
               </Label>
               <Link
-                className="text-xs text-foreground underline !text-blue-400"
+                className="text-xs underline !text-blue-400"
                 href="/forgot-password"
               >
                 Forgot Password?
@@ -78,10 +78,10 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
             </SubmitButton>
             <FormMessage message={searchParams} />
           </div>
-          <p className="text-sm text-foreground text-slate-200 text-center">
+          <p className="text-sm text-slate-200 text-center">
             Don't have an account?{" "}
             <Link
-              className="text-foreground font-medium underline text-blue-400"
+              className="font-medium underline text-blue-400"
               href="/sign-up"
             >
               Sign up

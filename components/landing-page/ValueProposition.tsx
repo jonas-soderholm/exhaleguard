@@ -4,8 +4,8 @@ export function ValueProposition() {
   const cards = [
     {
       title: "Is Cybersecurity Important?",
-      description:
-        "Especially in cybersecurity, a team is only as strong as its weakest link. An untrained employee can become an entry point for malicious data or miss key security protocols. ExhaleGuard helps companies educate all employees to strengthen security and prevent threats.",
+      description: `Especially in cybersecurity, a team is only as strong as its weakest link. An untrained employee can become an entry point for malicious data or miss
+         key security protocols. ${LogoName.AppName} helps companies educate all employees to strengthen security and prevent threats.`,
       image: "/value-propositions-images/question-mark-shield.svg",
     },
     {
@@ -16,8 +16,8 @@ export function ValueProposition() {
     },
     {
       title: "Security Frameworks?",
-      description:
-        "Complex security frameworks like CIS 18, NIST, and ISO 27000 are designed for larger organizations and dedicated security teams, often making them costly and out of reach for many small to medium businesses. At XhaleGuard, we bridge that gap—empowering your team with essential skills and insights while introducing you to these frameworks as part of our course.",
+      description: `Complex security frameworks like CIS 18, NIST, and ISO 27000 are designed for larger organizations and dedicated security teams, often making them costly
+         and out of reach for many small to medium businesses. At ${LogoName.AppName}, we bridge that gap—empowering your team with essential skills and insights while introducing you to these frameworks as part of our course.`,
       image: "/value-propositions-images/documentation.svg",
     },
   ];

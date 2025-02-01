@@ -33,7 +33,7 @@ export default function Hero() {
           </Link>
 
           <p className="mt-3 text-slate-400 text-sm">
-            No login or credit card required.
+            No credit card required.
           </p>
           {/* <p className="text-slate-400 text-sm">
             Full access - {Prices.Individual}/mo.

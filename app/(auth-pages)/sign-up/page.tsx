@@ -61,10 +61,10 @@ export default async function Signup(props: {
             </SubmitButton>
             <FormMessage message={searchParams} />
           </div>
-          <p className="text-sm text-foreground text-slate-200 text-center">
+          <p className="text-sm text-slate-200 text-center">
             Already have an account?{" "}
             <Link
-              className="text-foreground font-medium underline text-blue-400"
+              className="font-medium underline text-blue-400"
               href="/sign-in"
             >
               Sign in
