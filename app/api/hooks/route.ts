@@ -12,7 +12,6 @@ export async function POST(req: NextRequest) {
   const sig = req.headers.get("stripe-signature")!;
   let event: Stripe.Event;
 
-  // Step 1: Verify the Stripe signature
   try {
     event = stripe.webhooks.constructEvent(
       payload,
@@ -24,81 +23,36 @@ export async function POST(req: NextRequest) {
     return new NextResponse("Webhook Error", { status: 400 });
   }
 
-  // Step 2: Handle specific event types
   try {
-    switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-        const userId = session.metadata?.userId;
-        const planMembers = session.metadata?.planMembers || ""; // Comma-separated emails
-        const amount = session.amount_total ? session.amount_total / 100 : 0; // Stripe amount is in cents
-        const status = session.payment_status; // "paid", "unpaid", etc.
-        const stripeRef = session.payment_intent as string; // Payment Intent ID
-        const payDate = new Date();
+    if (event.type === "checkout.session.completed") {
+      // Payment completed successfully
+      const session = event.data.object as Stripe.Checkout.Session;
+      const userId = session.metadata?.userId;
+      const planType = session.metadata?.planType;
+      const planMembers = session.metadata?.planMembers || "";
+      const amount = session.amount_total ? session.amount_total / 100 : 0; // Convert cents to dollars
+      const status = session.payment_status;
+      const stripeRef = session.payment_intent as string;
+      const payDate = new Date();
 
-        if (!userId) {
-          console.error("User ID is missing from metadata");
-          return new NextResponse("User ID is missing", { status: 400 });
-        }
-
-        // Create or update the subscription
-        await createOrUpdateSubscription(userId);
-
-        // Create the invoice in the database
-        console.log("Creating invoice...");
-        await prisma.invoice.create({
-          data: {
-            userId,
-            amount,
-            status,
-            payDate,
-            stripeRef,
-            planMembers,
-          },
-        });
-
-        break;
+      if (!userId) {
+        return new NextResponse("User ID is missing", { status: 400 });
       }
 
-      case "payment_intent.succeeded": {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        const userId = paymentIntent.metadata?.userId;
-        const planMembers = paymentIntent.metadata?.planMembers || ""; // Comma-separated emails
-        const amount = paymentIntent.amount ? paymentIntent.amount / 100 : 0; // Stripe amount is in cents
-        const status = "paid";
-        const stripeRef = paymentIntent.id; // Payment Intent ID
-        const payDate = new Date();
-
-        if (!userId) {
-          console.error("User ID is missing from metadata");
-          return new NextResponse("User ID is missing", { status: 400 });
-        }
-
-        // Create or update the subscription
+      if (planType === "individual") {
         await createOrUpdateSubscription(userId);
-
-        // Create the invoice in the database
         await prisma.invoice.create({
-          data: {
-            userId,
-            amount,
-            status,
-            payDate,
-            stripeRef,
-            planMembers,
-          },
+          data: { userId, amount, status, payDate, stripeRef, planMembers },
         });
-        break;
+        console.log("✔️✔️✔️✔️✔️ PLAN:", planType);
+      } else {
+        console.log("✔️✔️✔️✔️✔️ PLAN:", planType);
       }
-
-      default:
-        console.warn("Unhandled event type:", event.type);
     }
   } catch (error) {
     console.error(`Error processing event ${event.type}:`, error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 
-  console.log("Webhook processing complete");
   return new NextResponse("Webhook received", { status: 200 });
 }

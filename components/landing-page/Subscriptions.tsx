@@ -29,7 +29,7 @@ export default function Subscriptions() {
       description: `Add team members at a discounted rate (minimum of 2 seats).`,
       image:
         "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-      active: false,
+      active: true,
       price: Prices.Team,
       buttontext: "Get Access",
       route: "/account?tab=2",

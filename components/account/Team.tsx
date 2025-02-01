@@ -1,23 +1,8 @@
 "use client";
-import { createCheckoutSession } from "@/utils/stripe/stripe-actions";
 import { LogoName } from "@/constants/logo-name";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Prices } from "@/constants/prices";
-
-export const handleCheckoutTeam = async () => {
-  try {
-    const checkoutUrl = await createCheckoutSession();
-
-    if (checkoutUrl) {
-      window.location.href = checkoutUrl; // Redirect to Stripe Checkout
-    } else {
-      alert("Failed to create a Stripe Checkout session.");
-    }
-  } catch (error) {
-    console.error("Error creating Stripe Checkout session:", error);
-    alert("Something went wrong. Please try again.");
-  }
-};
+import { createCheckoutSessionTeam } from "@/utils/stripe/stripe-actions";
 
 export default function Team() {
   const [teamEmails, setTeamEmails] = useState<string[]>([]);
@@ -30,7 +15,11 @@ export default function Team() {
   const minimumEmails = 2;
   const alertTimeoutShort = 2500;
   const alertTimeoutLong = 7000;
-  let totalAmountToPay = Prices.Team * teamEmails.length;
+
+  const totalAmountToPay = useMemo(
+    () => Prices.Team * teamEmails.length,
+    [teamEmails]
+  );
 
   useEffect(() => {
     setCheckoutDisabled(teamEmails.length < minimumEmails);
@@ -110,6 +99,20 @@ export default function Team() {
 
   const handleAddEmail = () => {
     addEmail(currentEmailInput);
+  };
+
+  const handleCheckoutTeam = async () => {
+    try {
+      const checkoutUrl = await createCheckoutSessionTeam(teamEmails);
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        setAlert("Failed to create a Stripe Checkout session.");
+      }
+    } catch (error) {
+      console.error("Error creating Stripe Checkout session:", error);
+      setAlert("Something went wrong. Please try again.");
+    }
   };
 
   return (
@@ -213,7 +216,7 @@ export default function Team() {
           <div>
             <div className="mt-2">
               <button
-                // onClick={() => handleCheckout()}
+                onClick={() => handleCheckoutTeam()}
                 disabled={checkoutDisabled}
                 data-tip={
                   checkoutDisabled

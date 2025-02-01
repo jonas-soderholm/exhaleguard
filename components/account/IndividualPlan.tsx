@@ -1,6 +1,6 @@
 "use client";
 import { Prices } from "@/constants/prices";
-import { createCheckoutSession } from "@/utils/stripe/stripe-actions";
+import { createCheckoutSessionIndividual } from "@/utils/stripe/stripe-actions";
 
 type IndividualPlanProps = {
   email: string | null;
@@ -22,7 +22,7 @@ const KeySvg = () => (
 
 export const handleCheckout = async () => {
   try {
-    const checkoutUrl = await createCheckoutSession();
+    const checkoutUrl = await createCheckoutSessionIndividual();
 
     if (checkoutUrl) {
       window.location.href = checkoutUrl; // Redirect to Stripe Checkout
