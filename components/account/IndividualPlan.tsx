@@ -20,25 +20,25 @@ const KeySvg = () => (
   </svg>
 );
 
+export const handleCheckout = async () => {
+  try {
+    const checkoutUrl = await createCheckoutSession();
+
+    if (checkoutUrl) {
+      window.location.href = checkoutUrl; // Redirect to Stripe Checkout
+    } else {
+      alert("Failed to create a Stripe Checkout session.");
+    }
+  } catch (error) {
+    console.error("Error creating Stripe Checkout session:", error);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
 export default function IndividualPlan({
   subscribed,
   daysLeft,
 }: IndividualPlanProps) {
-  const handleCheckout = async () => {
-    try {
-      const checkoutUrl = await createCheckoutSession();
-
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl; // Redirect to Stripe Checkout
-      } else {
-        alert("Failed to create a Stripe Checkout session.");
-      }
-    } catch (error) {
-      console.error("Error creating Stripe Checkout session:", error);
-      alert("Something went wrong. Please try again.");
-    }
-  };
-
   return (
     <div className="mx-auto">
       {subscribed ? (
